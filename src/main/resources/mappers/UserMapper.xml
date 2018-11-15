@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.junsta.service.mapper.UserMapper">
+
+	<select id="selectUserList"
+		resultType="com.example.junsta.model.AuthUser">
+		select * from user
+	</select>
+
+	<select id="readAuthority" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		select authName from auth
+		where userId = #{userId}
+	</select>
+
+	<select id="readUser" parameterType="java.lang.String"
+		resultType="com.example.junsta.model.AuthUser">
+		select * from user where userId=#{userId}
+	</select>
+	<insert id="createUser"
+		parameterType="com.example.junsta.model.AuthUser">
+		insert into user(userId, userName, password) values
+		(#{userId}, #{userName},#{password})
+	</insert>
+	<insert id="createAuthority"
+		parameterType="com.example.junsta.model.AuthUser">
+		insert into auth(userId, authName) values
+		(#{userId}, 'USER')
+	</insert>
+
+	<delete id="deleteUser" parameterType="java.lang.String">
+		delete from user where userId=#{userId}
+	</delete>
+	<delete id="deleteAuthority" parameterType="java.lang.String">
+		delete from auth where userId=#{userId}
+	</delete>
+</mapper>
