@@ -5,7 +5,17 @@
 
 <mapper namespace="com.example.junsta.service.mapper.PostMapper">
 	<select id="getAll" resultType="com.example.junsta.model.PostVO">
-		select * from post;
+		select * from post
 	</select>
+	<select id="getPostByAuthor" resultType="java.lang.String">
+		select * from post where uploadby=#{userId}
+	</select>
+	<select id="getImage" resultType="java.lang.String">
+		select contents_pic from post where postId=#{postId}
+	</select>
+	
+	<insert id="uploadPost" parameterType="com.example.junsta.model.PostVO">
+		insert into post(uploadBy, contents_pic, contents_text, uploadDate) values (#{uploadBy, jdbcType=VARCHAR}, #{contents_pic, jdbcType=VARCHAR}, #{contents_text, jdbcType=VARCHAR}, now());
+	</insert>
 
 </mapper>
