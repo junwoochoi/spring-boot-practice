@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 			check += userMapper.createAuthority(user);
 		} catch (Exception e) {
 			logger.error("회원가입 실패 : >> {}", e.getMessage());
-			return 0;
+			return -1;
 		}
 		return check;
 
@@ -82,6 +82,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public PasswordEncoder passwordEncoder() {
 		return this.passwordEncoder;
+	}
+
+	@Override
+	public int checkExists(String userId) {
+		return userMapper.checkExists(userId);
 	}
 
 }

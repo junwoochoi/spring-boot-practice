@@ -18,6 +18,8 @@ public interface UserService extends UserDetailsService {
 	public int createUser(AuthUser user);
 
 	public int deleteUser(String userId);
+	
+	public int checkExists(String userId);
 
 	public PasswordEncoder passwordEncoder();
 

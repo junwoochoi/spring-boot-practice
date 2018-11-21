@@ -12,6 +12,7 @@ public interface UserMapper {
 	public int createAuthority(AuthUser user) throws Exception;
 	public List<String> readAuthority(String userId);
 	public AuthUser readUser(String userId);
+	public int checkExists(String userId);
 	public int deleteUser(String userId); 
 	public int deleteAuthority(String userId); 
 	public PasswordEncoder passwordEncoder();

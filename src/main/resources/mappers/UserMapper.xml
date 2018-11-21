@@ -5,6 +5,9 @@
 
 <mapper namespace="com.example.junsta.service.mapper.UserMapper">
 
+<select id="checkExists" parameterType="java.lang.String" resultType="java.lang.Integer">
+	select COUNT(*) from user where userId=#{userId}
+</select>
 	<select id="selectUserList"
 		resultType="com.example.junsta.model.AuthUser">
 		select * from user

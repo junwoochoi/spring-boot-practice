@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.junsta.model.ApiResponseMessage;
 import com.example.junsta.model.PostVO;
 import com.example.junsta.service.PostService;
 
@@ -40,11 +39,9 @@ public class PostController {
 		List<PostVO> postList;
 		postList = postService.getAll();
 		if(postList!=null) {			
-			ApiResponseMessage response = new ApiResponseMessage(ApiResponseMessage.SUCCESS, "성공", "", "");
 			return new ResponseEntity<List<PostVO>>(postList, HttpStatus.OK);
 		}
-		ApiResponseMessage response = new ApiResponseMessage(ApiResponseMessage.FAILED, "", "POST0000", "게시글 받아오기 실패");
-		return new ResponseEntity<ApiResponseMessage>(response, HttpStatus.BAD_REQUEST);	
+		return new ResponseEntity<String>("게시글 받아오기 실패", HttpStatus.BAD_REQUEST);	
 	}
 	
 	@GetMapping("/image/{id}")
@@ -56,27 +53,24 @@ public class PostController {
 		} catch (IOException e) {			
 			logger.error("이미지 받아오기 실패 >> ");
 			logger.error(e.getMessage());
-			ApiResponseMessage response = new ApiResponseMessage(ApiResponseMessage.FAILED, "", "POST0000", "이미지 받아오기 실패");
-			return new ResponseEntity<ApiResponseMessage>(response, HttpStatus.BAD_REQUEST);		
+			return new ResponseEntity<String>("이미지 받아오기 실패", HttpStatus.BAD_REQUEST);		
 		}
 	}
 	
 
 	@PostMapping("/upload")
-	public ResponseEntity<ApiResponseMessage> uploadPost(final WebRequest webRequest,
+	public ResponseEntity<?> uploadPost(final WebRequest webRequest,
 			@RequestParam("fileContent") final MultipartFile fileContent, @RequestParam("inputJson") String post) {
 
 		try {
 			postService.uploadPost(post, fileContent);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-			ApiResponseMessage response = new ApiResponseMessage(ApiResponseMessage.FAILED, "", "POST0001", "파일을 확인하세요.");
-			return new ResponseEntity<ApiResponseMessage>(response, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>( "파일을 확인하세요.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("데이터 삽입 성공");
-		ApiResponseMessage response = new ApiResponseMessage(ApiResponseMessage.SUCCESS, "데이터 삽입 성공", "", "");
-		return new ResponseEntity<ApiResponseMessage>(response, HttpStatus.OK);
+		return new ResponseEntity<String>("데이터 삽입 성공", HttpStatus.OK);
 
 	}
 

@@ -1,5 +1,8 @@
 package com.example.junsta.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -11,15 +14,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.junsta.model.ApiResponseMessage;
 import com.example.junsta.model.AuthUser;
 import com.example.junsta.model.AuthenticationRequest;
 import com.example.junsta.model.AuthenticationToken;
@@ -38,6 +42,38 @@ public class UserController {
 	@Autowired
 	AuthenticationManager authenticationManager;
 
+	
+	@GetMapping("/myInfo")
+	public ResponseEntity<?> getMyInfo(HttpSession session){
+		SecurityContext context =  (SecurityContext) session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		if(context != null) {
+			Authentication auth = context.getAuthentication();
+			if(auth !=null ) {				
+			return ResponseEntity.ok(auth.getDetails());
+			}
+		}
+		return ResponseEntity.badRequest().build();
+
+	}
+	
+	@GetMapping("/exists")
+	public ResponseEntity<Map<String, Boolean>> checkExists(@RequestParam("userId") String userId){
+		int check = -1 ;
+		check = userService.checkExists(userId);
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		if(check != -1) {
+			
+		if(check==0) {
+			map.put("exists", false);
+		} else if(check>0){
+			map.put("exists", true);
+		} 
+		return ResponseEntity.ok(map);
+		}
+		
+		return ResponseEntity.badRequest().build();
+
+	}
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest, HttpSession session) {
 		String userId = authenticationRequest.getUserId();
@@ -59,24 +95,39 @@ public class UserController {
 			return new ResponseEntity<AuthenticationToken>(authToken, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error(userId + "로그인 에러 : >> "+e.getMessage());
-			ApiResponseMessage response = new ApiResponseMessage(ApiResponseMessage.FAILED, "", "LOGIN0001", "아이디와 비번을 확인하십시오.");
-			return new ResponseEntity<ApiResponseMessage>(response, HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<String>("아이디와 비번을 확인하세요", HttpStatus.UNAUTHORIZED);
 		}
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<ApiResponseMessage> create(@RequestBody AuthUser user) throws JsonProcessingException {
+	public ResponseEntity<String> create(@RequestBody AuthUser user) throws JsonProcessingException {
 
-		int check = userService.createUser(user);
+		int check = -1;
+		check = userService.createUser(user);
 		String result = "";
-		if (check > 0) {
+		
+		logger.info("check 값 : {}", check);
+		if (check > 0 ) {
 			result = "회원가입 완료";
-			ApiResponseMessage responseMessage = new ApiResponseMessage(ApiResponseMessage.SUCCESS, result, "", "");
-			return new ResponseEntity<ApiResponseMessage>(responseMessage, HttpStatus.OK);
-		}
+			return new ResponseEntity<String>(result, HttpStatus.OK);
+		} 
+		if(check == -1) {
+			return new ResponseEntity<String>("이미존재하는 회원", HttpStatus.BAD_REQUEST);
+		} else {
 		result = "회원가입 실패";
-		ApiResponseMessage responseMessage = new ApiResponseMessage(ApiResponseMessage.FAILED, "", "LOGIN0000", result);
-		return new ResponseEntity<ApiResponseMessage>(responseMessage, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>(result, HttpStatus.BAD_GATEWAY);
+		}
+	}
+	
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(HttpSession session){
+		session.removeAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+		
+		if(session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY) == null) {
+			return ResponseEntity.ok().build();			
+		}
+		return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+		
 	}
 
 }
