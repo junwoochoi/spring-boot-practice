@@ -10,6 +10,9 @@
 	<select id="getLikeCount" resultType="java.lang.Integer" parameterType="java.lang.String">
 		select count(*) as count from `like` where postId=#{postId}
 	</select>
+	<select id="getFollowingUserList" resultType="java.lang.Integer" parameterType="java.lang.String">
+		select followedUserId  from `follow` where followUserId=#{userId}
+	</select>
 	<select id="getPostByAuthor" resultType="java.lang.String">
 		select * from post where uploadby=#{userId}
 	</select>
@@ -30,7 +33,14 @@
 	</insert>
 	
 	<delete id="deleteLike" parameterType="java.util.HashMap">
-		delete from `like` where userId=#{userId} and postId=#{postId}
+		delete from `like` where followedUserId=#{followedUserId} and followUserId=#{followUserId}
+	</delete>
+	<insert id="insertFollowing" parameterType="java.util.HashMap">
+		insert into `follow`(followedUserId, followUserId) values(#{followedUserId}, #{followUserId})
+	</insert>
+	
+	<delete id="deleteFollowing" parameterType="java.util.HashMap">
+		delete from `follow` where followUserId=#{followUserId} and followedUserId=#{followedUserId}
 	</delete>
 	
 

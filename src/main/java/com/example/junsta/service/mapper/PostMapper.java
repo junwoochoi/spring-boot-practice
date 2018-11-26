@@ -14,4 +14,7 @@ public interface PostMapper {
 	public int insertLike(Map<String,String> map);
 	public int deleteLike(Map<String,String> map);
 	public int getLikeCount(String postId);
+	public List<String> getFollowingUserList(String userId);
+	public int insertFollowing(Map<String,String> map);
+	public int deleteFollowing(Map<String,String> map);
 }

@@ -81,6 +81,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public boolean getLike(Map<String,String> map) {
 		int count =  postMapper.getLike(map);
+		logger.info("count >>> {}", count);
 		if(count>0) {
 			return true;
 		} else {
@@ -97,6 +98,11 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public int deleteLike(Map<String, String> map) {
 		return postMapper.deleteLike(map);
+	}
+
+	@Override
+	public List<String> getFollowingUserList(String userId) {
+		return postMapper.getFollowingUserList(userId);
 	}
 
 

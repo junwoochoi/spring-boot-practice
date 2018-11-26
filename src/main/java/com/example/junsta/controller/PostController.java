@@ -14,7 +14,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.junsta.model.PostVO;
 import com.example.junsta.service.PostService;
-import com.example.junsta.util.JsonUtil;
 
 @RestController
 @EnableAutoConfiguration
@@ -37,46 +35,54 @@ public class PostController {
 
 	@Autowired
 	PostService postService;
-	
+
 	@GetMapping("/checkAuth")
-	public ResponseEntity<?> checkAuth(){
+	public ResponseEntity<?> checkAuth() {
 		return new ResponseEntity<String>("권한있음", HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/like/check")
-	public ResponseEntity<?> checkLike(HttpSession session, @RequestParam("userId")String userId,@RequestParam("postId")String postId){
-		Map<String,String> map = new HashMap<String,String>();
+	public ResponseEntity<?> checkLike(HttpSession session, @RequestParam("userId") String userId,
+			@RequestParam("postId") String postId) {
+		Map<String, String> map = new HashMap<String, String>();
 		map.put("postId", postId);
 		map.put("userId", userId);
-		
+
 		logger.info("파라미터 map : >> {}", map);
 		Boolean checkLike = null;
 		try {
-			checkLike = postService.getLike(map);			
+			checkLike = postService.getLike(map);
 			return new ResponseEntity<Boolean>(checkLike, HttpStatus.OK);
-		} catch (Exception e) {	
+		} catch (Exception e) {
 			logger.error(e.getMessage());
-			return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);					
+			return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
 		}
 	}
-	
+
 	@PostMapping("/like/toggle")
-	public ResponseEntity<?> toggleLike(@RequestBody Map<String,String> map){
+	public ResponseEntity<?> toggleLike(@RequestBody Map<String, String> map) {
 		int check = -1;
-		  if(postService.getLike(map)) {
-			  check = postService.deleteLike(map);
-		  } else {
-			  check = postService.insertLike(map); 
-		  }
-			if(check<1) {				
-				return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);		
-			} 
-			return new ResponseEntity<String>("좋아요 토글 성공", HttpStatus.OK);
+		if (postService.getLike(map)) {
+			check = postService.deleteLike(map);
+		} else {
+			check = postService.insertLike(map);
+		}
+		if (check < 1) {
+			return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+		}
+		return new ResponseEntity<String>("좋아요 토글 성공", HttpStatus.OK);
 	}
-	
+
+	@GetMapping("/follow/check")
+	public ResponseEntity<?> getFollowingUserList(@RequestParam("userId") String userId) {
+		
+		List<String> userList = postService.getFollowingUserList(userId);
+		return new ResponseEntity<List<String>>(userList, HttpStatus.OK);
+	}
 
 	@GetMapping("/all")
-	public ResponseEntity<?> getAll(HttpSession session, @RequestParam("startIndex")Integer startIndex, @RequestParam("limit")Integer limit ) {
+	public ResponseEntity<?> getAll(HttpSession session, @RequestParam("startIndex") Integer startIndex,
+			@RequestParam("limit") Integer limit) {
 		List<PostVO> postList;
 		Map<String, Integer> pageMap = new HashMap<String, Integer>();
 		pageMap.put("startIndex", startIndex);
@@ -89,7 +95,7 @@ public class PostController {
 	}
 
 	@PostMapping("/image")
-	public ResponseEntity<?> getImage(@RequestBody Map<String,String> map) {
+	public ResponseEntity<?> getImage(@RequestBody Map<String, String> map) {
 		byte[] image;
 		try {
 			String fileName = map.get("fileName");
@@ -118,5 +124,4 @@ public class PostController {
 
 	}
 
-	
 }

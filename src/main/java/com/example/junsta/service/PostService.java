@@ -19,4 +19,5 @@ public interface PostService {
 	public boolean getLike(Map<String,String> map);
 	public int insertLike(Map<String,String> map);
 	public int deleteLike(Map<String,String> map);
+	public List<String> getFollowingUserList(String userId);
 }
