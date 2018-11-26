@@ -90,7 +90,7 @@ public class UserController {
 
 			AuthUser user = userService.readUser(userId);
 			logger.info("{} 로그인 ", userId);
-			AuthenticationToken authToken = new AuthenticationToken(user.getUserId(), user.getAuthorities(),
+			AuthenticationToken authToken = new AuthenticationToken(user.getUserId(), user.getUsername(), user.getAuthorities(),
 					session.getId());
 			return new ResponseEntity<AuthenticationToken>(authToken, HttpStatus.OK);
 		} catch (Exception e) {

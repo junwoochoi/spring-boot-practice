@@ -15,6 +15,7 @@ public class PostVO {
 	private String  contents_pic;
 	private String contents_text;
 	private String uploadDate;
+	private int likeCount;
 	
 	
 }

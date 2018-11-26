@@ -4,8 +4,11 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.junsta.service.mapper.PostMapper">
-	<select id="getAll" resultType="com.example.junsta.model.PostVO">
-		select * from post
+	<select id="getAll" resultType="com.example.junsta.model.PostVO" parameterType="java.util.HashMap">
+		select  * from post order by uploadDate desc limit #{startIndex}, #{limit}
+	</select>
+	<select id="getLikeCount" resultType="java.lang.Integer" parameterType="java.lang.String">
+		select count(*) as count from `like` where postId=#{postId}
 	</select>
 	<select id="getPostByAuthor" resultType="java.lang.String">
 		select * from post where uploadby=#{userId}
@@ -14,8 +17,21 @@
 		select contents_pic from post where postId=#{postId}
 	</select>
 	
+	<select id="getLike" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(*) as count from `like` where postId=#{postId} and userId=#{userId}
+	</select>
+	
 	<insert id="uploadPost" parameterType="com.example.junsta.model.PostVO">
 		insert into post(uploadBy, contents_pic, contents_text, uploadDate) values (#{uploadBy, jdbcType=VARCHAR}, #{contents_pic, jdbcType=VARCHAR}, #{contents_text, jdbcType=VARCHAR}, now());
 	</insert>
+	
+	<insert id="insertLike" parameterType="java.util.HashMap">
+		insert into `like`(postId, userId) values(#{postId}, #{userId})
+	</insert>
+	
+	<delete id="deleteLike" parameterType="java.util.HashMap">
+		delete from `like` where userId=#{userId} and postId=#{postId}
+	</delete>
+	
 
 </mapper>

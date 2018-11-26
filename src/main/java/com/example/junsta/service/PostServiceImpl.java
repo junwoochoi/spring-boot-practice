@@ -3,7 +3,9 @@ package com.example.junsta.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +31,17 @@ public class PostServiceImpl implements PostService {
 	PostMapper postMapper;
 
 	@Override
-	public List<PostVO> getAll() {
-
-		return postMapper.getAll();
+	public List<PostVO> getAll(Map<String, Integer> map) {
+		List<PostVO> list = postMapper.getAll(map);
+		for(PostVO postVo : list) {
+			postVo.setLikeCount(postMapper.getLikeCount(String.valueOf(postVo.getPostId())));
+		}
+		return list;
 	}
 
 	@Override
-	public byte[] getImage(String id) throws IOException {
-		String fileName = postMapper.getImage(id);
+	public byte[] getImage(String fileName) throws IOException {
+		
 		File fi = new File(IMAGE_URL+fileName);
 		byte[] fileContent = Files.readAllBytes(fi.toPath());
 		return fileContent;
@@ -71,6 +76,27 @@ public class PostServiceImpl implements PostService {
 			postMapper.uploadPost(postObj);
 
 		}
+	}
+
+	@Override
+	public boolean getLike(Map<String,String> map) {
+		int count =  postMapper.getLike(map);
+		if(count>0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int insertLike(Map<String, String> map) {
+		
+		return postMapper.insertLike(map);
+	}
+
+	@Override
+	public int deleteLike(Map<String, String> map) {
+		return postMapper.deleteLike(map);
 	}
 
 

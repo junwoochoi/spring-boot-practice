@@ -28,6 +28,7 @@ public class SimpleCorsFilter implements Filter {
 	}
 
 	public void init(FilterConfig filterConfig) {
+		
 	}
 
 	public void destroy() {
