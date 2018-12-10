@@ -79,6 +79,16 @@ public class PostController {
 		List<String> userList = postService.getFollowingUserList(userId);
 		return new ResponseEntity<List<String>>(userList, HttpStatus.OK);
 	}
+	@PostMapping("/follow")
+	public ResponseEntity<?> toggleFollowingUser(@RequestBody Map<String,String> param) {
+		int check = -1;
+		check = postService.toggleFollow(param);
+		if(check>0) {
+			return new ResponseEntity<String>("성공", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+		}
+	}
 
 	@GetMapping("/all")
 	public ResponseEntity<?> getAll(HttpSession session, @RequestParam("startIndex") Integer startIndex,

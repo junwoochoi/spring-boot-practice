@@ -105,5 +105,20 @@ public class PostServiceImpl implements PostService {
 		return postMapper.getFollowingUserList(userId);
 	}
 
+	@Override
+	public int toggleFollow(Map<String, String> map) {
+		int check = postMapper.getFollowing(map);
+		logger.info("{getFollowing} 실행됨");
+		if(check>0) {
+			logger.info("{deleteFollowing} 실행됨");
+			return postMapper.deleteFollowing(map);
+		} else if(check==0){
+			logger.info("{insertFollowing} 실행됨");
+			return postMapper.insertFollowing(map);
+		} else {
+			return -1;
+		}
+	}
+
 
 }

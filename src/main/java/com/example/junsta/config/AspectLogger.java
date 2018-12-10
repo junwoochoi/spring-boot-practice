@@ -20,7 +20,7 @@ import com.example.junsta.util.JsonUtil;
 public class AspectLogger {
 	
 	private final Logger logger = LoggerFactory.getLogger(AspectLogger.class);
-	
+
 	@Around("execution(* com.example.junsta.controller.*.*(..))")
 	public Object loggingResponseAndRequest(final ProceedingJoinPoint joinPoint) throws Throwable {
 		

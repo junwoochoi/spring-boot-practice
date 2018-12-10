@@ -10,7 +10,7 @@
 	<select id="getLikeCount" resultType="java.lang.Integer" parameterType="java.lang.String">
 		select count(*) as count from `like` where postId=#{postId}
 	</select>
-	<select id="getFollowingUserList" resultType="java.lang.Integer" parameterType="java.lang.String">
+	<select id="getFollowingUserList" resultType="java.lang.String" parameterType="java.lang.String">
 		select followedUserId  from `follow` where followUserId=#{userId}
 	</select>
 	<select id="getPostByAuthor" resultType="java.lang.String">
@@ -24,6 +24,7 @@
 		select count(*) as count from `like` where postId=#{postId} and userId=#{userId}
 	</select>
 	
+	
 	<insert id="uploadPost" parameterType="com.example.junsta.model.PostVO">
 		insert into post(uploadBy, contents_pic, contents_text, uploadDate) values (#{uploadBy, jdbcType=VARCHAR}, #{contents_pic, jdbcType=VARCHAR}, #{contents_text, jdbcType=VARCHAR}, now());
 	</insert>
@@ -33,7 +34,7 @@
 	</insert>
 	
 	<delete id="deleteLike" parameterType="java.util.HashMap">
-		delete from `like` where followedUserId=#{followedUserId} and followUserId=#{followUserId}
+		delete from `like` where postId=#{postId} and userId=#{userId}
 	</delete>
 	<insert id="insertFollowing" parameterType="java.util.HashMap">
 		insert into `follow`(followedUserId, followUserId) values(#{followedUserId}, #{followUserId})
@@ -42,6 +43,8 @@
 	<delete id="deleteFollowing" parameterType="java.util.HashMap">
 		delete from `follow` where followUserId=#{followUserId} and followedUserId=#{followedUserId}
 	</delete>
-	
+	<select id="getFollowing" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(*) as count from `follow` where followUserId=#{followUserId} and followedUserId=#{followedUserId}
+	</select>
 
 </mapper>
