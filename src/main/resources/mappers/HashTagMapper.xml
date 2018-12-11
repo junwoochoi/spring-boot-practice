@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.junsta.service.mapper.HashTagMapper">
+
+<select id="searchByKeyword" parameterType="java.lang.String" resultType="java.util.HashMap">
+	select tagName, COUNT(*) as count from hashtag where tagName like CONCAT(#{keyword},'%') group by tagName
+</select>
+	
+</mapper>
