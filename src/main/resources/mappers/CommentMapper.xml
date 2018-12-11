@@ -12,4 +12,7 @@
 	 	SELECT * FROM comment WHERE postId=#{postId}
 	</select>
 
+<delete id="deleteComment" parameterType="java.util.Map">
+	DELETE FROM comment WHERE postId=#{postId} and userId=#{userId}
+</delete>
 </mapper>
