@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.junsta.model.AuthUser;
+import com.example.junsta.model.UserVO;
 import com.example.junsta.service.mapper.UserMapper;
 
 @Service
@@ -87,6 +88,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int checkExists(String userId) {
 		return userMapper.checkExists(userId);
+	}
+
+	@Override
+	public UserVO getUserInfo(String userId) {
+		
+		return userMapper.getUserInfo(userId);
 	}
 
 }

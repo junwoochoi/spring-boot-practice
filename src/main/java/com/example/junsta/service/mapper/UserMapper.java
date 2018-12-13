@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.junsta.model.AuthUser;
+import com.example.junsta.model.UserVO;
 
 public interface UserMapper {
 	public List<AuthUser> selectUserList() throws Exception;
@@ -16,5 +17,6 @@ public interface UserMapper {
 	public int deleteUser(String userId); 
 	public int deleteAuthority(String userId); 
 	public PasswordEncoder passwordEncoder();
+	public UserVO getUserInfo(String userId);
 
 }

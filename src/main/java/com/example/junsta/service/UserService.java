@@ -23,4 +23,5 @@ public interface UserService extends UserDetailsService {
 
 	public PasswordEncoder passwordEncoder();
 
+	public UserVO getUserInfo(String userId);
 }

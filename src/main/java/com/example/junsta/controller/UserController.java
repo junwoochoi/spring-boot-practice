@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.junsta.model.AuthUser;
 import com.example.junsta.model.AuthenticationRequest;
 import com.example.junsta.model.AuthenticationToken;
+import com.example.junsta.model.UserVO;
 import com.example.junsta.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -132,4 +133,18 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 
+	@GetMapping("/userInfo")
+	public ResponseEntity<?> getInfo(@RequestParam("userId")String userId){
+		UserVO user= null;
+		try{
+			user = userService.getUserInfo(userId);
+		} catch(Exception e) {
+			return new ResponseEntity<String>("데이터베이스 에러", HttpStatus.BAD_GATEWAY);
+		}
+		if(user==null) {
+			return new ResponseEntity<String>("존재하지않는 회원입니다.", HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<UserVO>(user, HttpStatus.OK);
+		
+	}
 }
