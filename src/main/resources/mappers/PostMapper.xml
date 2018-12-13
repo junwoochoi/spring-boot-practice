@@ -47,4 +47,7 @@
 		select count(*) as count from `follow` where followUserId=#{followUserId} and followedUserId=#{followedUserId}
 	</select>
 
+<delete id="deletePost" parameterType="java.util.HashMap">
+	delete from post where postId=#{postId}
+</delete>
 </mapper>

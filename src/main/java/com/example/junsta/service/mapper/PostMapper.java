@@ -18,4 +18,5 @@ public interface PostMapper {
 	public int getFollowing(Map<String,String> map);
 	public int insertFollowing(Map<String,String> map);
 	public int deleteFollowing(Map<String,String> map);
+	public int deletePost(Map<String,String> map);
 }

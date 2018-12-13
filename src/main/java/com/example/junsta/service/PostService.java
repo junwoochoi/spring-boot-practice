@@ -21,4 +21,5 @@ public interface PostService {
 	public int deleteLike(Map<String,String> map);
 	public List<String> getFollowingUserList(String userId);
 	public int toggleFollow(Map<String,String> map);
+	public int deletePost(Map<String, String> map);
 }
