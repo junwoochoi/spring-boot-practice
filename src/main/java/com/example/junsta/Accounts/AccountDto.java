@@ -1,25 +1,25 @@
 package com.example.junsta.Accounts;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.*;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class AccountDto {
 
-    @NotEmpty
+    @NotEmpty @NotBlank
     private String displayName;
-    @NotEmpty @Email
+    @NotEmpty @NotBlank @Email
     private String email;
     @NotEmpty
+    @NotBlank
+    @JsonIgnore
     private String password;
 
     public Account toEntity(){
