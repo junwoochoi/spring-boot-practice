@@ -1,8 +1,6 @@
-package com.example.junsta.Accounts;
+package com.example.junsta.accounts;
 
 
-import com.example.junsta.Accounts.Account;
-import com.example.junsta.Accounts.AccountRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

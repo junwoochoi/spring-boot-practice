@@ -1,4 +1,4 @@
-package com.example.junsta.Accounts;
+package com.example.junsta.accounts;
 
 import com.example.junsta.common.BaseEntity;
 import lombok.AccessLevel;
@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

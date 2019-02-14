@@ -1,4 +1,4 @@
-package com.example.junsta.Accounts;
+package com.example.junsta.accounts;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

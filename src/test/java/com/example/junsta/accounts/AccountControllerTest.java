@@ -1,5 +1,6 @@
-package com.example.junsta.Accounts;
+package com.example.junsta.accounts;
 
+import com.example.junsta.common.AppProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,10 +10,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.common.util.Jackson2JsonParser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Optional;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,10 +38,16 @@ public class AccountControllerTest {
     AccountRepository accountRepository;
 
     @Autowired
+    AccountService accountService;
+
+    @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    AppProperties appProperties;
+
     @Before
-    public void setup(){
+    public void setup() {
         accountRepository.deleteAll();
     }
 
@@ -120,5 +133,76 @@ public class AccountControllerTest {
         ).andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void 토큰받기_성공() throws Exception {
+        createTestAccount();
+
+        mockMvc.perform(
+                post("/oauth/token")
+                        .with(httpBasic(appProperties.getClientId(), appProperties.getSecret()))
+                        .param("username", appProperties.getTestEmail())
+                        .param("password", appProperties.getTestPassword())
+                        .param("grant_type", "password")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("access_token").exists())
+                .andExpect(jsonPath("refresh_token").exists());
+    }
+
+    @Test
+    public void 회원탈퇴() throws Exception {
+
+        mockMvc.perform(
+                delete("/api/accounts")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        )
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        mockMvc.perform(
+                post("/oauth/token")
+                        .with(httpBasic(appProperties.getClientId(), appProperties.getSecret()))
+                        .param("username", appProperties.getTestEmail())
+                        .param("password", appProperties.getTestPassword())
+                        .param("grant_type", "password")
+        ).andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("access_token").doesNotExist());
+    }
+
+    private Account createTestAccount() {
+        Optional<Account> optionalAccount = accountService.findByEmail(appProperties.getTestEmail());
+        if (optionalAccount.isPresent()) {
+            return optionalAccount.get();
+        }
+
+        AccountDto dto = AccountDto.builder()
+                .displayName("test")
+                .email(appProperties.getTestEmail())
+                .password(appProperties.getTestPassword())
+                .build();
+
+        return accountService.save(dto);
+
+    }
+
+    private String getAccessToken() throws Exception {
+        createTestAccount();
+
+        ResultActions perform = mockMvc.perform(
+                post("/oauth/token")
+                        .with(httpBasic(appProperties.getClientId(), appProperties.getSecret()))
+                        .param("username", appProperties.getTestEmail())
+                        .param("password", appProperties.getTestPassword())
+                        .param("grant_type", "password")
+        );
+        String responseString = perform.andReturn().getResponse().getContentAsString();
+        Jackson2JsonParser parser = new Jackson2JsonParser();
+        return parser.parseMap(responseString).get("access_token").toString();
+    }
+
 
 }

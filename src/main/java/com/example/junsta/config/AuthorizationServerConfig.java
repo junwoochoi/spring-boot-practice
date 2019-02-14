@@ -1,10 +1,10 @@
 package com.example.junsta.config;
 
-import com.example.junsta.Accounts.AccountService;
+import com.example.junsta.accounts.AccountService;
+import com.example.junsta.common.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -24,13 +24,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     AuthenticationManager authenticationManager;
     @Autowired
     AccountService accountService;
+    @Autowired
+    AppProperties appProperties;
 
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("client")
-                .secret(passwordEncoder.encode("secret"))
+                .withClient(appProperties.getClientId())
+                .secret(passwordEncoder.encode(appProperties.getSecret()))
                 .scopes("write", "read", "update")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(60 * 60 * 8)

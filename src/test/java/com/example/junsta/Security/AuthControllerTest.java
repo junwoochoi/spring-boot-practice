@@ -1,9 +1,9 @@
 package com.example.junsta.Security;
 
-import com.example.junsta.Accounts.Account;
-import com.example.junsta.Accounts.AccountDto;
-import com.example.junsta.Accounts.AccountRepository;
-import com.example.junsta.Accounts.AccountService;
+import com.example.junsta.accounts.Account;
+import com.example.junsta.accounts.AccountDto;
+import com.example.junsta.accounts.AccountRepository;
+import com.example.junsta.accounts.AccountService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

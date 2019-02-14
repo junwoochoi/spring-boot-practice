@@ -1,6 +1,7 @@
-package com.example.junsta.Accounts;
+package com.example.junsta.accounts;
 
 
+import com.example.junsta.common.AppProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class AccountServiceTest {
     AccountService accountService;
     @Autowired
     PasswordEncoder passwordEncoder;
+
 
     @Test
     public void 어카운트_저장_및_암호화여부(){
