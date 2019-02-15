@@ -1,10 +1,7 @@
 package com.example.junsta.accounts;
 
 import com.example.junsta.common.BaseEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,6 +11,7 @@ import java.util.stream.Stream;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class Account extends BaseEntity {
 
 

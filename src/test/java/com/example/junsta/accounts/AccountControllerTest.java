@@ -1,19 +1,12 @@
 package com.example.junsta.accounts;
 
-import com.example.junsta.common.AppProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.junsta.common.BaseControllerTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.common.util.Jackson2JsonParser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Optional;
@@ -25,26 +18,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-public class AccountControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+public class AccountControllerTest extends BaseControllerTest {
+
+
 
     @Autowired
     AccountRepository accountRepository;
 
-    @Autowired
-    AccountService accountService;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Autowired
-    AppProperties appProperties;
 
     @Before
     public void setup() {
@@ -156,7 +137,7 @@ public class AccountControllerTest {
 
         mockMvc.perform(
                 delete("/api/accounts")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                        .header(HttpHeaders.AUTHORIZATION,  getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         )
                 .andDo(print())
@@ -172,6 +153,29 @@ public class AccountControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("access_token").doesNotExist());
     }
+
+    @Test
+    public void 회원탈퇴_실패() throws Exception {
+
+        mockMvc.perform(
+                delete("/api/accounts")
+                        .header(HttpHeaders.AUTHORIZATION,  getAccessToken()+"1234")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        )
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(
+                post("/oauth/token")
+                        .with(httpBasic(appProperties.getClientId(), appProperties.getSecret()))
+                        .param("username", appProperties.getTestEmail())
+                        .param("password", appProperties.getTestPassword())
+                        .param("grant_type", "password")
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("access_token").exists());
+    }
+
 
     private Account createTestAccount() {
         Optional<Account> optionalAccount = accountService.findByEmail(appProperties.getTestEmail());
@@ -201,7 +205,7 @@ public class AccountControllerTest {
         );
         String responseString = perform.andReturn().getResponse().getContentAsString();
         Jackson2JsonParser parser = new Jackson2JsonParser();
-        return parser.parseMap(responseString).get("access_token").toString();
+        return "Bearer " + parser.parseMap(responseString).get("access_token").toString();
     }
 
 

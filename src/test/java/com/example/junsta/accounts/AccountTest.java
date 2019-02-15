@@ -1,6 +1,7 @@
 package com.example.junsta.accounts;
 
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,11 @@ public class AccountTest {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Before
+    public void cleanup(){
+        accountRepository.deleteAll();
+    }
 
     @Test
     public void 어카운트_생성_테스트(){

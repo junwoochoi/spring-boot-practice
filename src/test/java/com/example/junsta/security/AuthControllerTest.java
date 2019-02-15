@@ -1,9 +1,10 @@
-package com.example.junsta.Security;
+package com.example.junsta.security;
 
 import com.example.junsta.accounts.Account;
 import com.example.junsta.accounts.AccountDto;
 import com.example.junsta.accounts.AccountRepository;
 import com.example.junsta.accounts.AccountService;
+import com.example.junsta.common.AppProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,9 @@ public class AuthControllerTest {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    AppProperties appProperties;
+
     @Before
     public void 초기화(){
         accountRepository.deleteAll();
@@ -55,7 +59,7 @@ public class AuthControllerTest {
 
 
         mockMvc.perform(post("/oauth/token")
-        .with(httpBasic("client",  "secret"))
+        .with(httpBasic(appProperties.getClientId(),  appProperties.getSecret()))
                 .param("username", email)
                 .param("password", password)
                 .param("grant_type", "password")
@@ -84,7 +88,7 @@ public class AuthControllerTest {
                 .param("password", "틀린패스워드")
                 .param("grant_type", "password")
         ).andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
     @Test
     public void 토큰발급_실패_이메일_미존재() throws Exception {
@@ -105,6 +109,6 @@ public class AuthControllerTest {
                 .param("password", password)
                 .param("grant_type", "password")
         ).andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 }
