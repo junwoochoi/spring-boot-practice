@@ -2,6 +2,7 @@ package com.example.junsta.accounts;
 
 import com.example.junsta.common.BaseEntity;
 import lombok.*;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -16,6 +17,7 @@ public class Account extends BaseEntity {
 
 
     @Column(unique = true, nullable = false)
+    @NaturalId
     private String email;
 
     @Column(nullable = false)

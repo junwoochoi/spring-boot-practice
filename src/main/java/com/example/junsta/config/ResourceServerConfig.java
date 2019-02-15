@@ -20,7 +20,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/api/accounts").anonymous()
+                .antMatchers("/api/**").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/accounts").permitAll()
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(new OAuth2AccessDeniedHandler());

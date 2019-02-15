@@ -40,7 +40,7 @@ public abstract class BaseControllerTest {
     protected AccountService accountService;
 
 
-    private Account createTestAccount() {
+    protected Account createTestAccount() {
         Optional<Account> optionalAccount = accountService.findByEmail(appProperties.getTestEmail());
         if (optionalAccount.isPresent()) {
             return optionalAccount.get();
@@ -56,7 +56,7 @@ public abstract class BaseControllerTest {
 
     }
 
-    private String getAccessToken() throws Exception {
+    protected String getAccessToken() throws Exception {
         createTestAccount();
 
         ResultActions perform = mockMvc.perform(

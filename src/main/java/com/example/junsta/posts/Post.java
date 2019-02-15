@@ -16,7 +16,7 @@ import java.util.List;
 @ToString
 public class Post extends BaseEntity {
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UploadedImage uploadedImage;
 
     @Column(nullable = true)

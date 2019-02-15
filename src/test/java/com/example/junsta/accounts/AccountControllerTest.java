@@ -6,10 +6,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.common.util.Jackson2JsonParser;
-import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -177,36 +173,6 @@ public class AccountControllerTest extends BaseControllerTest {
     }
 
 
-    private Account createTestAccount() {
-        Optional<Account> optionalAccount = accountService.findByEmail(appProperties.getTestEmail());
-        if (optionalAccount.isPresent()) {
-            return optionalAccount.get();
-        }
-
-        AccountDto dto = AccountDto.builder()
-                .displayName("test")
-                .email(appProperties.getTestEmail())
-                .password(appProperties.getTestPassword())
-                .build();
-
-        return accountService.save(dto);
-
-    }
-
-    private String getAccessToken() throws Exception {
-        createTestAccount();
-
-        ResultActions perform = mockMvc.perform(
-                post("/oauth/token")
-                        .with(httpBasic(appProperties.getClientId(), appProperties.getSecret()))
-                        .param("username", appProperties.getTestEmail())
-                        .param("password", appProperties.getTestPassword())
-                        .param("grant_type", "password")
-        );
-        String responseString = perform.andReturn().getResponse().getContentAsString();
-        Jackson2JsonParser parser = new Jackson2JsonParser();
-        return "Bearer " + parser.parseMap(responseString).get("access_token").toString();
-    }
 
 
 }
