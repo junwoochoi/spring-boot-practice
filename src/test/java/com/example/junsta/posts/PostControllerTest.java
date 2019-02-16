@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -80,4 +80,18 @@ public class PostControllerTest extends BaseControllerTest {
                 .andDo(print())
         .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void 포스트_받아오기_성공() throws Exception {
+
+
+        mockMvc.perform(get("/api/post")
+                .param("page", "1")
+                .param("size", "10")
+                .param("sort", "name,desc"))
+                .andDo(print())
+                .andExpect(status().isOk()
+                );
+    }
+
 }
