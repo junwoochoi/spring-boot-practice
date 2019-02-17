@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import javax.transaction.Transactional;
 import java.util.stream.IntStream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -93,22 +94,25 @@ public class PostControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @Transactional
     public void 포스트_받아오기_성공() throws Exception {
         IntStream.range(0, 30).forEach(this::createPost);
 
 
         mockMvc.perform(get("/api/post")
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .param("page", "1")
                 .param("size", "10")
-                .param("sort", "name,desc"))
+                .param("sort", "createdAt,desc"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("page").exists());
+                .andExpect(jsonPath("pageable").exists());
     }
 
     private Post createPost(int i) {
         UploadedImage uploadedImage = UploadedImage.builder()
                 .imageExtension("imageExtension")
+                .imagePath("imagePath")
                 .imageName("imageName")
                 .originalName("originName")
                 .build();
