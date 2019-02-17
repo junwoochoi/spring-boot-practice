@@ -1,7 +1,10 @@
 package com.example.junsta.posts;
 
 import com.example.junsta.common.BaseControllerTest;
+import com.example.junsta.uploadImages.UploadedImage;
+import com.example.junsta.uploadImages.UploadedImageRepository;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -11,6 +14,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class PostControllerTest extends BaseControllerTest {
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private UploadedImageRepository uploadedImageRepository;
 
     @Test
     public void 포스트생성_성공() throws Exception{
@@ -84,6 +93,7 @@ public class PostControllerTest extends BaseControllerTest {
     @Test
     public void 포스트_받아오기_성공() throws Exception {
 
+        Post post = createPost(0);
 
         mockMvc.perform(get("/api/post")
                 .param("page", "1")
@@ -92,6 +102,23 @@ public class PostControllerTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk()
                 );
+    }
+
+    private Post createPost(int i) {
+        UploadedImage uploadedImage = UploadedImage.builder()
+                .imageExtension("imageExtension")
+                .imageName("imageName")
+                .originalName("originName")
+                .build();
+
+        UploadedImage savedUploadImage = uploadedImageRepository.save(uploadedImage);
+
+        Post post = Post.builder()
+                .uploadedImage(savedUploadImage)
+                .postText("post"+i)
+                .build();
+
+        return postRepository.save(post);
     }
 
 }
