@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import java.util.stream.IntStream;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,7 +24,7 @@ public class PostControllerTest extends BaseControllerTest {
     private UploadedImageRepository uploadedImageRepository;
 
     @Test
-    public void 포스트생성_성공() throws Exception{
+    public void 포스트생성_성공() throws Exception {
         PostRequestDto dto = PostRequestDto.builder()
                 .imageExtension("png")
                 .imageName("imageName")
@@ -33,26 +35,26 @@ public class PostControllerTest extends BaseControllerTest {
 
         mockMvc.perform(
                 post("/api/post")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
-                .content(objectMapper.writeValueAsBytes(dto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .content(objectMapper.writeValueAsBytes(dto))
         )
                 .andDo(print())
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("imageName").exists())
-        .andExpect(jsonPath("originalName").exists())
-        .andExpect(jsonPath("imagePath").exists())
-        .andExpect(jsonPath("imageExtension").exists())
-        .andExpect(jsonPath("commentList").exists())
-        .andExpect(jsonPath("postText").exists())
-        .andExpect(jsonPath("createdAt").exists())
-        .andExpect(jsonPath("modifiedAt").exists())
-        .andExpect(jsonPath("createdBy").exists())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("imageName").exists())
+                .andExpect(jsonPath("originalName").exists())
+                .andExpect(jsonPath("imagePath").exists())
+                .andExpect(jsonPath("imageExtension").exists())
+                .andExpect(jsonPath("commentList").exists())
+                .andExpect(jsonPath("postText").exists())
+                .andExpect(jsonPath("createdAt").exists())
+                .andExpect(jsonPath("modifiedAt").exists())
+                .andExpect(jsonPath("createdBy").exists())
         ;
     }
 
     @Test
-    public void 포스트생성_권한없음_실패() throws Exception{
+    public void 포스트생성_권한없음_실패() throws Exception {
         PostRequestDto dto = PostRequestDto.builder()
                 .imageExtension("png")
                 .imageName("imageName")
@@ -71,7 +73,7 @@ public class PostControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void 포스트생성_빈값입력_실패() throws Exception{
+    public void 포스트생성_빈값입력_실패() throws Exception {
         PostRequestDto dto = PostRequestDto.builder()
                 .imageExtension("png")
                 .imageName("")
@@ -82,26 +84,26 @@ public class PostControllerTest extends BaseControllerTest {
 
         mockMvc.perform(
                 post("/api/post")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
-                .content(objectMapper.writeValueAsBytes(dto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .content(objectMapper.writeValueAsBytes(dto))
         )
                 .andDo(print())
-        .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void 포스트_받아오기_성공() throws Exception {
+        IntStream.range(0, 30).forEach(this::createPost);
 
-        Post post = createPost(0);
 
         mockMvc.perform(get("/api/post")
                 .param("page", "1")
                 .param("size", "10")
                 .param("sort", "name,desc"))
                 .andDo(print())
-                .andExpect(status().isOk()
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists());
     }
 
     private Post createPost(int i) {
@@ -115,7 +117,7 @@ public class PostControllerTest extends BaseControllerTest {
 
         Post post = Post.builder()
                 .uploadedImage(savedUploadImage)
-                .postText("post"+i)
+                .postText("post" + i)
                 .build();
 
         return postRepository.save(post);
