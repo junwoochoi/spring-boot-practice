@@ -31,10 +31,11 @@ public class Post extends BaseEntity {
     private Account account;
 
     @Builder
-    public Post(UploadedImage uploadedImage, String postText, List<Comment> comments) {
+    public Post(UploadedImage uploadedImage, String postText, List<Comment> comments, Account account) {
         this.uploadedImage = uploadedImage;
         this.postText = postText;
         this.comments = comments;
+        this.account = account;
     }
 
 

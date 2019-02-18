@@ -29,7 +29,9 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    public Page<Post> findAll(Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public Page<PostResponseDto> findAll(Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        return posts.map((post -> new PostResponseDto(post)));
     }
 }

@@ -1,6 +1,8 @@
 package com.example.junsta.posts;
 
+import com.example.junsta.accounts.Account;
 import com.example.junsta.uploadImages.UploadedImage;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -23,7 +25,10 @@ public class PostRequestDto {
     private String imageExtension;
     @NotEmpty @NotBlank(message = "postText should not be blank")
     private String postText;
+    @JsonIgnore
+    private Account account;
 
+    @JsonIgnore
     public UploadedImage getUploadImageEntity() {
         return UploadedImage.builder()
                 .imagePath(imagePath)
@@ -33,6 +38,7 @@ public class PostRequestDto {
                 .build();
     }
 
+    @JsonIgnore
     public Post getPostEntity(){
         return Post.builder()
                 .uploadedImage(getUploadImageEntity())
