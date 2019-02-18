@@ -5,28 +5,32 @@ import com.example.junsta.accounts.AccountRepository;
 import com.example.junsta.accounts.AccountRequestDto;
 import com.example.junsta.accounts.AccountService;
 import com.example.junsta.common.AppProperties;
+import com.example.junsta.common.BaseControllerTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@ActiveProfiles("test")
-@AutoConfigureMockMvc
-public class AuthControllerTest {
+
+public class AuthControllerTest extends BaseControllerTest {
 
     @Autowired
     protected MockMvc mockMvc;
@@ -64,6 +68,24 @@ public class AuthControllerTest {
                 .param("password", password)
                 .param("grant_type", "password")
         ).andDo(print())
+                .andDo(document(
+                        "get-token",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 정보 헤더")
+                        ),
+                        requestParameters(
+                                parameterWithName("username").description("회원 이메일"),
+                                parameterWithName("password").description("회원 비밀번호"),
+                                parameterWithName("grant_type").description("회원 인증 방식 ( password, access_token )")
+                        ),
+                        responseFields(
+                                fieldWithPath("access_token").description("액세스 토큰"),
+                                fieldWithPath("token_type").description("토큰 타입"),
+                                fieldWithPath("refresh_token").description("리프레시 토큰"),
+                                fieldWithPath("expires_in").description("토큰 유효기간"),
+                                fieldWithPath("scope").description("스코프")
+                        )
+                ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("access_token").exists())
                 .andExpect(jsonPath("refresh_token").exists());

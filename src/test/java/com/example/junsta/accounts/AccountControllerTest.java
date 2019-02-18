@@ -157,6 +157,12 @@ public class AccountControllerTest extends BaseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         )
                 .andDo(print())
+                .andDo(document("delete-account",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("컨텐츠 타입 헤더"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 정보 헤더")
+                        )
+                ))
                 .andExpect(status().isOk());
 
         mockMvc.perform(

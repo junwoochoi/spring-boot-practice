@@ -11,6 +11,10 @@ import org.springframework.http.MediaType;
 import javax.transaction.Transactional;
 import java.util.stream.IntStream;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -41,6 +45,16 @@ public class PostControllerTest extends BaseControllerTest {
                         .content(objectMapper.writeValueAsBytes(dto))
         )
                 .andDo(print())
+                .andDo(document("create-post",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 정보 헤더")
+                        ),
+                        requestFields(
+
+                        ),
+                        responseHeaders(),
+                        responseFields()
+                        ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("imageName").exists())
                 .andExpect(jsonPath("originalName").exists())

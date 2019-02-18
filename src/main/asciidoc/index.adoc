@@ -109,7 +109,7 @@ operation::create-event[snippets='request-fields,curl-request,http-response']
 [[resources-events-get]]
 === 포스트 조회
 
-`Get` 요청을 사용해서 기존 이벤트 하나를 조회할 수 있다.
+`Get` 요청을 사용해서 기존 포스트 하나를 조회할 수 있다.
 
 operation::get-post[snippets='request-fields,curl-request,http-response']
 
