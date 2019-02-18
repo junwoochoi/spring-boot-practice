@@ -17,7 +17,7 @@ public class AccountController {
     AccountService accountService;
 
     @PostMapping
-    public ResponseEntity createAccount(@RequestBody @Valid AccountDto dto, Errors errors) {
+    public ResponseEntity createAccount(@RequestBody @Valid AccountRequestDto dto, Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors);
         }
@@ -25,12 +25,7 @@ public class AccountController {
         Account account = accountService.save(dto);
 
 
-        return ResponseEntity.ok(
-                AccountDto.builder()
-                        .displayName(account.getDisplayName())
-                        .email(account.getEmail())
-                        .build()
-        );
+        return ResponseEntity.ok(new AccountResponseDto(account));
     }
 
     @DeleteMapping

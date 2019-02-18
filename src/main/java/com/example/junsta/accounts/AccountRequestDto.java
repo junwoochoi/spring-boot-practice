@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 @Builder
 @AllArgsConstructor
-public class AccountDto {
+public class AccountRequestDto {
 
     @NotEmpty @NotBlank
     private String displayName;

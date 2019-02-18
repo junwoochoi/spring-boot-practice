@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 public class AccountControllerTest extends BaseControllerTest {
@@ -34,7 +36,7 @@ public class AccountControllerTest extends BaseControllerTest {
         String email = "junu4690@naver.com";
         String password = "password";
         String displayName = "displayName";
-        AccountDto dto = AccountDto.builder()
+        AccountRequestDto dto = AccountRequestDto.builder()
                 .email(email)
                 .password(password)
                 .displayName(displayName)
@@ -45,10 +47,28 @@ public class AccountControllerTest extends BaseControllerTest {
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsBytes(dto))
         ).andDo(print())
+                .andDo(document("create-account",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("컨텐츠 타입 헤더"),
+                                headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더")
+                        ),
+                        requestFields(
+                                fieldWithPath("displayName").description("회원 닉네임"),
+                                fieldWithPath("email").description("회원 이메일"),
+                                fieldWithPath("password").description("회원 비밀번호")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("컨텐츠 타입 헤더")
+                        ),
+                        responseFields(
+                                fieldWithPath("displayName").description("회원가입된 회원 닉네임"),
+                                fieldWithPath("email").description("회원가입된 회원 이메일")
+                        )
+                ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("email").value(email))
                 .andExpect(jsonPath("displayName").value(displayName))
-                .andExpect(jsonPath("password").doesNotExist());
+                .andExpect(jsonPath("password").doesNotHaveJsonPath());
     }
 
     @Test
@@ -57,7 +77,7 @@ public class AccountControllerTest extends BaseControllerTest {
         String email = " ";
         String password = "password";
         String displayName = "displayName";
-        AccountDto dto = AccountDto.builder()
+        AccountRequestDto dto = AccountRequestDto.builder()
                 .email(email)
                 .password(password)
                 .displayName(displayName)
@@ -77,7 +97,7 @@ public class AccountControllerTest extends BaseControllerTest {
         String email = "email@naver.com";
         String password = "  ";
         String displayName = "displayName";
-        AccountDto dto = AccountDto.builder()
+        AccountRequestDto dto = AccountRequestDto.builder()
                 .email(email)
                 .password(password)
                 .displayName(displayName)
@@ -97,7 +117,7 @@ public class AccountControllerTest extends BaseControllerTest {
         String email = "email@naver.com";
         String password = "password";
         String displayName = "  ";
-        AccountDto dto = AccountDto.builder()
+        AccountRequestDto dto = AccountRequestDto.builder()
                 .email(email)
                 .password(password)
                 .displayName(displayName)

@@ -1,8 +1,8 @@
 package com.example.junsta.security;
 
 import com.example.junsta.accounts.Account;
-import com.example.junsta.accounts.AccountDto;
 import com.example.junsta.accounts.AccountRepository;
+import com.example.junsta.accounts.AccountRequestDto;
 import com.example.junsta.accounts.AccountService;
 import com.example.junsta.common.AppProperties;
 import org.junit.Before;
@@ -15,11 +15,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @SpringBootTest
@@ -49,7 +49,7 @@ public class AuthControllerTest {
     public void 토큰발급() throws Exception {
         String email = "test@email.com";
         String password = "password";
-        AccountDto dto = AccountDto.builder()
+        AccountRequestDto dto = AccountRequestDto.builder()
                 .displayName("닉네임")
                 .email(email)
                 .password(password)
@@ -73,7 +73,7 @@ public class AuthControllerTest {
     public void 토큰발급_실패_비밀번호다름() throws Exception {
         String email = "test@email.com";
         String password = "password";
-        AccountDto dto = AccountDto.builder()
+        AccountRequestDto dto = AccountRequestDto.builder()
                 .displayName("닉네임")
                 .email(email)
                 .password(password)
@@ -94,7 +94,7 @@ public class AuthControllerTest {
     public void 토큰발급_실패_이메일_미존재() throws Exception {
         String email = "test@email.com";
         String password = "password";
-        AccountDto dto = AccountDto.builder()
+        AccountRequestDto dto = AccountRequestDto.builder()
                 .displayName("닉네임")
                 .email(email)
                 .password(password)
@@ -109,6 +109,9 @@ public class AuthControllerTest {
                 .param("password", password)
                 .param("grant_type", "password")
         ).andDo(print())
+                .andDo(
+                        document("oauth-authorization")
+                )
                 .andExpect(status().isUnauthorized());
     }
 }

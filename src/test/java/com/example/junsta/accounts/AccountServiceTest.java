@@ -31,7 +31,7 @@ public class AccountServiceTest {
         String displayName = "닉네임";
         String email = "email@email.com";
         String password = "password";
-        AccountDto dto = AccountDto.builder()
+        AccountRequestDto dto = AccountRequestDto.builder()
                 .displayName(displayName)
                 .email(email)
                 .password(password)

@@ -2,12 +2,12 @@ package com.example.junsta.common;
 
 
 import com.example.junsta.accounts.Account;
-import com.example.junsta.accounts.AccountDto;
-import com.example.junsta.accounts.AccountRepository;
+import com.example.junsta.accounts.AccountRequestDto;
 import com.example.junsta.accounts.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.oauth2.common.util.Jackson2JsonParser;
@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 @ActiveProfiles("test")
 public abstract class BaseControllerTest {
 
@@ -46,7 +47,7 @@ public abstract class BaseControllerTest {
             return optionalAccount.get();
         }
 
-        AccountDto dto = AccountDto.builder()
+        AccountRequestDto dto = AccountRequestDto.builder()
                 .displayName("test")
                 .email(appProperties.getTestEmail())
                 .password(appProperties.getTestPassword())
