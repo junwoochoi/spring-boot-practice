@@ -19,10 +19,11 @@ public class AccountController {
     @PostMapping
     public ResponseEntity createAccount(@RequestBody @Valid AccountDto dto, Errors errors) {
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
 
         Account account = accountService.save(dto);
+
 
         return ResponseEntity.ok(
                 AccountDto.builder()

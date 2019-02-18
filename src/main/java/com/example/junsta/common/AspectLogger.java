@@ -1,4 +1,4 @@
-package com.example.junsta.config;
+package com.example.junsta.common;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -22,7 +22,7 @@ public class AspectLogger {
 	
 	
 
-	@Around("execution(* com.example.junsta.controller.*.*(..))")
+	@Around("execution(* com.example.junsta.*.*Controller.*(..))")
 	public Object loggingResponseAndRequest(final ProceedingJoinPoint joinPoint) throws Throwable {
 		
 		Object[] params = joinPoint.getArgs();
