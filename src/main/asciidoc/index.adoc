@@ -80,12 +80,60 @@ include::{snippets}/errors/http-response.adoc[]
 인덱스는 서비스 진입점을 제공한다.
 
 
+
 [[resources-index-access]]
 === 인덱스 조회
 
 `GET` 요청을 사용하여 인덱스에 접근할 수 있다.
 
 operation::index[snippets='response-body,http-response']
+
+[[resources-token]]
+== 토큰
+
+토큰은 회원 로그인을 위해 사용된다.
+
+[[resources-token-post]]
+=== 토큰 발급
+
+`POST` 요청을 사용하여 토큰을 발급 받을 수 있다.
+
+operation::get-token[snippets='request-parameters,curl-request,http-response']
+
+[[resources-token-get]]
+=== 토큰 이용한 로그인
+
+토큰을 이용한 로그인
+
+operation::oauth-authorization[snippets='request-,curl-request,http-response']
+
+
+[[resources-account]]
+== 회원
+
+회원 리소스는 회원가입 혹은 회원정보 수정할 때, 회원탈퇴에 사용한다.
+
+[[resources-accounts-post]]
+=== 회원가입
+
+`POST` 요청을 사용해서 새 회원을 만들 수 있다.
+
+operation::create-account[snippets='request-fields,curl-request,http-response']
+
+
+[[resources-accounts-update]]
+=== 회원정보 수정
+
+`PUT` 요청을 사용해서 기존 회원정보를 수정할 수 있다.
+
+operation::update-account[snippets='request-fields,curl-request,http-response']
+
+[[resources-accounts-delete]]
+=== 회원탈퇴
+
+`DELETE` 요청을 사용해서 기존 회원이 탈퇴할 수 있다.
+
+operation::delete-account[snippets='request-fields,curl-request,http-response']
 
 [[resources-post]]
 == 포스트
@@ -97,25 +145,33 @@ operation::index[snippets='response-body,http-response']
 
 `GET` 요청을 사용하여 서비스의 모든 포스트를 조회할 수 있다.
 
-operation::get-post[snippets='response-fields,curl-request,http-response']
+operation::get-posts[snippets='response-fields,curl-request,http-response']
 
-[[resources-events-post]]
-=== 이벤트 생성
+[[resources-posts-post]]
+=== 포스트 생성
 
 `POST` 요청을 사용해서 새 포스트를 만들 수 있다.
 
-operation::create-event[snippets='request-fields,curl-request,http-response']
+operation::create-post[snippets='request-fields,curl-request,http-response']
 
-[[resources-events-get]]
+[[resources-posts-get]]
 === 포스트 조회
 
 `Get` 요청을 사용해서 기존 포스트 하나를 조회할 수 있다.
 
-operation::get-post[snippets='request-fields,curl-request,http-response']
+operation::get-posts[snippets='request-fields,curl-request,http-response']
 
 [[resources-posts-update]]
-=== 이벤트 수정
+=== 포스트 수정
 
 `PUT` 요청을 사용해서 기존 포스트를 수정할 수 있다.
 
-operation::update-event[snippets='request-fields,curl-request,http-response']
+operation::update-post[snippets='request-fields,curl-request,http-response']
+
+[[resources-posts-delete]]
+=== 포스트 삭제
+
+`DELETE` 요청을 사용해서 기존 포스트를 삭제할 수 있다.
+
+operation::delete-post[snippets='request-fields,curl-request,http-response']
+

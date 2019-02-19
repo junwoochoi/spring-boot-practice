@@ -6,6 +6,7 @@ import com.example.junsta.accounts.AccountRequestDto;
 import com.example.junsta.accounts.AccountService;
 import com.example.junsta.common.AppProperties;
 import com.example.junsta.common.BaseControllerTest;
+import com.example.junsta.posts.PostRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,11 +43,16 @@ public class AuthControllerTest extends BaseControllerTest {
     AccountRepository accountRepository;
 
     @Autowired
+    PostRepository postRepository;
+
+    @Autowired
     AppProperties appProperties;
 
     @Before
     public void 초기화(){
+        postRepository.deleteAll();
         accountRepository.deleteAll();
+        accountRepository.flush();
     }
 
     @Test

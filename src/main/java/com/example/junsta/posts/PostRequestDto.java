@@ -43,6 +43,7 @@ public class PostRequestDto {
         return Post.builder()
                 .uploadedImage(getUploadImageEntity())
                 .postText(postText)
+                .account(account)
                 .build();
     }
 }
