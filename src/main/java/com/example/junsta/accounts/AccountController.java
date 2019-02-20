@@ -41,4 +41,20 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping
+    public ResponseEntity updateAccount(@RequestBody @Valid AccountUpdateRequestDto dto,
+                                        Errors errors,
+                                        @AuthenticationPrincipal AccountAdapter accountAdapter){
+        if(errors.hasErrors()){
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        Account currentUser = accountAdapter.getAccount();
+
+        AccountResponseDto responseDto = accountService.updateAccount(currentUser.getId(), dto);
+
+        return ResponseEntity.ok(responseDto);
+
+}
+
 }

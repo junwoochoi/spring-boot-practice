@@ -11,14 +11,12 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 public class AccountControllerTest extends BaseControllerTest {
-
 
 
     @Autowired
@@ -153,7 +151,7 @@ public class AccountControllerTest extends BaseControllerTest {
 
         mockMvc.perform(
                 delete("/api/accounts")
-                        .header(HttpHeaders.AUTHORIZATION,  getAccessToken())
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         )
                 .andDo(print())
@@ -181,7 +179,7 @@ public class AccountControllerTest extends BaseControllerTest {
 
         mockMvc.perform(
                 delete("/api/accounts")
-                        .header(HttpHeaders.AUTHORIZATION,  getAccessToken()+"1234")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken() + "1234")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         )
                 .andDo(print())
@@ -199,6 +197,84 @@ public class AccountControllerTest extends BaseControllerTest {
     }
 
 
+    @Test
+    public void 회원정보_수정_성공() throws Exception {
 
+        AccountUpdateRequestDto dto = AccountUpdateRequestDto.builder()
+                .email(appProperties.getTestEmail())
+                .displayName("changedName")
+                .build();
+
+
+        mockMvc.perform(
+                put("/api/accounts")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andDo(document("update-account",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 정보 헤더")
+                        ),
+                        relaxedRequestFields(
+                                fieldWithPath("displayName").description("변경할 닉네임"),
+                                fieldWithPath("email").description("현재 로그인한 유저 이메일")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("컨텐츠 타입 헤더")
+                        ),
+                        responseFields(
+                                fieldWithPath("displayName").description("회원가입된 회원 닉네임"),
+                                fieldWithPath("email").description("회원가입된 회원 이메일")
+                        )
+                ))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("displayName").exists())
+                .andExpect(jsonPath("displayName").value("changedName"))
+                .andExpect(jsonPath("email").exists())
+                .andExpect(jsonPath("password").doesNotExist());
+
+    }
+
+    @Test
+    public void 회원정보_수정_실패() throws Exception {
+
+        AccountRequestDto dto = AccountRequestDto.builder()
+                .email(appProperties.getTestEmail())
+                .displayName("")
+                .build();
+
+
+        mockMvc.perform(
+                put("/api/accounts")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    public void 회원정보_수정_실패_이메일다름() throws Exception {
+
+        AccountRequestDto dto = AccountRequestDto.builder()
+                .email("dasd" + appProperties.getTestEmail())
+                .displayName("변경")
+                .build();
+
+
+        mockMvc.perform(
+                put("/api/accounts")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+    }
 
 }

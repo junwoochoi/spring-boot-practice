@@ -36,4 +36,8 @@ public class Account extends BaseEntity {
         this.displayName=displayName;
         this.password=password;
     }
+
+    public void updateAccount(AccountUpdateRequestDto dto) {
+        this.displayName=dto.getDisplayName();
+    }
 }

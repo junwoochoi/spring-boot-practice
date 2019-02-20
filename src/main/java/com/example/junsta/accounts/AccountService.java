@@ -1,5 +1,6 @@
 package com.example.junsta.accounts;
 
+import com.example.junsta.exceptions.MemberNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -44,5 +45,18 @@ public class AccountService implements UserDetailsService {
 
     public void deleteAccount(Account account) {
         accountRepository.delete(account);
+    }
+
+    public AccountResponseDto updateAccount(Long id, AccountUpdateRequestDto dto) throws MemberNotExistException {
+        Optional<Account> optionalAccount = accountRepository.findByEmail(dto.getEmail());
+
+        if(!optionalAccount.isPresent() || optionalAccount.get().getId() != id){
+            throw new MemberNotExistException();
+        }
+
+        Account account = optionalAccount.get();
+
+        account.updateAccount(dto);
+        return new AccountResponseDto(account);
     }
 }
