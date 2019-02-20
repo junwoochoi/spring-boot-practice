@@ -1,4 +1,5 @@
 # Spring Boot 를 이용한 사진 SNS REST API 서버
+[![Build Status](https://travis-ci.org/junwoochoi/spring-boot-practice.svg?branch=master)](https://travis-ci.org/junwoochoi/spring-boot-practice)
 
 사진형 SNS 서비스인 인스타그램을 참고하여 만드는 Spring Boot 서비스 입니다.
 
