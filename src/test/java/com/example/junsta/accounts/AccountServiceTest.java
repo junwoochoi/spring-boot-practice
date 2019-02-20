@@ -39,8 +39,7 @@ public class AccountServiceTest {
 
         accountService.save(dto);
 
-        List<Account> list = accountService.findAll();
-        Account account = list.get(0);
+        Account account = accountService.findByEmail(email).get();
 
         assertThat(account.getEmail()).isEqualTo(email);
         assertThat(account.getDisplayName()).isEqualTo(displayName);

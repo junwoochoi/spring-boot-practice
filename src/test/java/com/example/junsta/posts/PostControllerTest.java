@@ -59,6 +59,7 @@ public class PostControllerTest extends BaseControllerTest {
                                 fieldWithPath("postText").description("포스트 본문")
                         ),
                         responseFields(
+                                fieldWithPath("id").description("포스트 아이디"),
                                 fieldWithPath("imagePath").description("S3에 삽입된 이미지 경로"),
                                 fieldWithPath("originalName").description("S3에 삽입된 이미지의 원본 파일명"),
                                 fieldWithPath("imageName").description("S3에 삽입된 이미지의 현재 파일명"),
@@ -148,6 +149,7 @@ public class PostControllerTest extends BaseControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("content").description("받아온 포스트 데이터 정보"),
+                                fieldWithPath("content[].id").description("포스트 아이디"),
                                 fieldWithPath("content[].imagePath").description("S3에 삽입된 이미지 경로"),
                                 fieldWithPath("content[].originalName").description("S3에 삽입된 이미지의 원본 파일명"),
                                 fieldWithPath("content[].imageName").description("S3에 삽입된 이미지의 현재 파일명"),
