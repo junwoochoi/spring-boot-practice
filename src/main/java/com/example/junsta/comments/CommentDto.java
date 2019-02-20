@@ -10,13 +10,14 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class CommentDto {
-
+    private Long id;
     private String createdBy;
     private String commentText;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
     public CommentDto(Comment comment){
+        this.id = comment.getId();
         this.createdAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
         this.createdBy = comment.getCreatedBy().getEmail();

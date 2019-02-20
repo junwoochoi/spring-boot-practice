@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 public class PostResponseDto {
 
+    private Long id;
     private String imagePath;
     private String originalName;
     private String imageName;
@@ -27,6 +28,7 @@ public class PostResponseDto {
     private List<CommentDto> commentList = new ArrayList<>();
 
     public PostResponseDto(Post post){
+        this.id = post.getId();
         this.createdAt=post.getCreatedAt();
         this.createdBy=post.getAccount().getEmail();
         this.imageExtension=post.getUploadedImage().getImageExtension();
