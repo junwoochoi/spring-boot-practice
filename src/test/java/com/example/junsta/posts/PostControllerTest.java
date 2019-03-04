@@ -12,7 +12,8 @@ import org.springframework.http.MediaType;
 import javax.transaction.Transactional;
 import java.util.stream.IntStream;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -70,7 +71,7 @@ public class PostControllerTest extends BaseControllerTest {
                                 fieldWithPath("modifiedAt").description("포스트 수정 일시"),
                                 fieldWithPath("commentList").description("포스트에 달린 댓글리스트")
 
-                                )
+                        )
                 ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("imageName").exists())
@@ -188,7 +189,74 @@ public class PostControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("pageable").exists());
     }
 
-    private Post createPost(int i)  {
+    @Test
+    public void 게시글_수정_성공() throws Exception {
+        String accessToken = getAccessToken();
+        Post post = Post.builder()
+                .postText("asdfasfd")
+                .uploadedImage(
+                        UploadedImage.builder()
+                                .imagePath("imagePath")
+                                .originalName("originName")
+                                .imageName("imageName")
+                                .imageExtension("imageExtension")
+                                .build()
+                )
+                .account(
+                        accountService.findByEmail(appProperties.getTestEmail()).get()
+                )
+                .build();
+        Post savedPost = postRepository.save(post);
+
+        PostUpdateRequestDto dto = new PostUpdateRequestDto();
+        String postText = "수정된 내용입니다.";
+        dto.setPostText(postText);
+        dto.setId(savedPost.getId());
+
+        mockMvc.perform(
+                put("/api/post")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andDo(document("update-post",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 정보 헤더")
+                        ),
+                        requestFields(
+                                fieldWithPath("id").description("포스트 아이디"),
+                                fieldWithPath("postText").description("포스트 본문")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("포스트 아이디"),
+                                fieldWithPath("imagePath").description("S3에 삽입된 이미지 경로"),
+                                fieldWithPath("originalName").description("S3에 삽입된 이미지의 원본 파일명"),
+                                fieldWithPath("imageName").description("S3에 삽입된 이미지의 현재 파일명"),
+                                fieldWithPath("imageExtension").description("S3에 삽입된 이미지 확장자"),
+                                fieldWithPath("postText").description("포스트 본문"),
+                                fieldWithPath("createdBy").description("포스트 작성자 이메일"),
+                                fieldWithPath("createdAt").description("포스트 작성 일시"),
+                                fieldWithPath("modifiedAt").description("포스트 수정 일시"),
+                                fieldWithPath("commentList").description("포스트에 달린 댓글리스트")
+
+                        )
+                ))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("imageName").exists())
+                .andExpect(jsonPath("originalName").exists())
+                .andExpect(jsonPath("imagePath").exists())
+                .andExpect(jsonPath("imageExtension").exists())
+                .andExpect(jsonPath("commentList").exists())
+                .andExpect(jsonPath("postText").exists())
+                .andExpect(jsonPath("createdAt").exists())
+                .andExpect(jsonPath("modifiedAt").exists())
+                .andExpect(jsonPath("createdBy").exists())
+        ;
+
+    }
+
+    private Post createPost(int i) {
         UploadedImage uploadedImage = UploadedImage.builder()
                 .imageExtension("imageExtension")
                 .imagePath("imagePath")

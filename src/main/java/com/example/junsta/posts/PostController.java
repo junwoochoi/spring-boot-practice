@@ -34,5 +34,16 @@ public class PostController {
         PostResponseDto responseDto = postService.uploadPost(dto);
         return ResponseEntity.ok(responseDto);
     }
+
+    @PutMapping
+    public ResponseEntity updatePost(@RequestBody @Valid PostUpdateRequestDto dto, Errors errors,
+                                     @AuthenticationPrincipal AccountAdapter accountAdapter){
+        if(errors.hasErrors()){
+            return ResponseEntity.badRequest().body(errors.getFieldError());
+        }
+
+        PostResponseDto responseDto = postService.updatePost(dto, accountAdapter.getAccount());
+        return ResponseEntity.ok(responseDto);
+    }
 }
 

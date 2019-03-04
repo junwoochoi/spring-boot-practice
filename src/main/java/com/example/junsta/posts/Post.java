@@ -39,4 +39,9 @@ public class Post extends BaseEntity {
     }
 
 
+    public void updateText(PostUpdateRequestDto dto) {
+        if(dto.getId()==this.getId()){
+            this.postText=dto.getPostText();
+        }
+    }
 }
