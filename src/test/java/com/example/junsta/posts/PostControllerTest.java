@@ -1,6 +1,7 @@
 package com.example.junsta.posts;
 
 import com.example.junsta.accounts.Account;
+import com.example.junsta.accounts.AccountRequestDto;
 import com.example.junsta.common.BaseControllerTest;
 import com.example.junsta.uploadImages.UploadedImage;
 import com.example.junsta.uploadImages.UploadedImageRepository;
@@ -252,6 +253,118 @@ public class PostControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("createdAt").exists())
                 .andExpect(jsonPath("modifiedAt").exists())
                 .andExpect(jsonPath("createdBy").exists())
+        ;
+
+    }
+
+    @Test
+    public void 게시글_수정_실패_빈값입력() throws Exception {
+        String accessToken = getAccessToken();
+        Post post = Post.builder()
+                .postText("asdfasfd")
+                .uploadedImage(
+                        UploadedImage.builder()
+                                .imagePath("imagePath")
+                                .originalName("originName")
+                                .imageName("imageName")
+                                .imageExtension("imageExtension")
+                                .build()
+                )
+                .account(
+                        accountService.findByEmail(appProperties.getTestEmail()).get()
+                )
+                .build();
+        Post savedPost = postRepository.save(post);
+
+        PostUpdateRequestDto dto = new PostUpdateRequestDto();
+        String postText = "";
+        dto.setPostText(postText);
+        dto.setId(savedPost.getId());
+
+        mockMvc.perform(
+                put("/api/post")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+
+    }
+
+    @Test
+    public void 게시글_수정_실패_잘못된아이디값() throws Exception {
+        String accessToken = getAccessToken();
+        Post post = Post.builder()
+                .postText("asdfasfd")
+                .uploadedImage(
+                        UploadedImage.builder()
+                                .imagePath("imagePath")
+                                .originalName("originName")
+                                .imageName("imageName")
+                                .imageExtension("imageExtension")
+                                .build()
+                )
+                .account(
+                        accountService.findByEmail(appProperties.getTestEmail()).get()
+                )
+                .build();
+        Post savedPost = postRepository.save(post);
+
+        PostUpdateRequestDto dto = new PostUpdateRequestDto();
+        String postText = "";
+        dto.setPostText(postText);
+        dto.setId(Long.valueOf(-1));
+
+        mockMvc.perform(
+                put("/api/post")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+
+    }
+
+    @Test
+    public void 게시글_수정_실패_다른유저의게시물수정하려함() throws Exception {
+        AccountRequestDto tempAccount = AccountRequestDto.builder()
+                .displayName("asdf")
+                .email("cjw4690@gmail")
+                .password("password")
+                .build();
+        Account savedAccount = accountService.save(tempAccount);
+
+        Post post = Post.builder()
+                .postText("asdfasfd")
+                .uploadedImage(
+                        UploadedImage.builder()
+                                .imagePath("imagePath")
+                                .originalName("originName")
+                                .imageName("imageName")
+                                .imageExtension("imageExtension")
+                                .build()
+                )
+                .account(savedAccount)
+                .build();
+        Post savedPost = postRepository.save(post);
+
+        PostUpdateRequestDto dto = new PostUpdateRequestDto();
+        String postText = "수정됐어열";
+        dto.setPostText(postText);
+        dto.setId(savedPost.getId());
+
+        mockMvc.perform(
+                put("/api/post")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
         ;
 
     }

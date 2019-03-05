@@ -41,7 +41,7 @@ public class PostService {
     public PostResponseDto updatePost(PostUpdateRequestDto dto, Account account) {
         Post post = postRepository.findById(dto.getId()).orElseThrow(PostNotExistException::new);
 
-        if(post.getAccount().equals(account)){
+        if(!post.getAccount().equals(account)){
             throw new UnauthorizedException();
         }
 
