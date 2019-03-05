@@ -5,6 +5,8 @@ import com.example.junsta.comments.Comment;
 import com.example.junsta.common.BaseEntity;
 import com.example.junsta.uploadImages.UploadedImage;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedBy;
 
 import javax.persistence.*;
@@ -27,7 +29,8 @@ public class Post extends BaseEntity {
     private List<Comment> comments;
 
     @CreatedBy
-    @ManyToOne(targetEntity = Account.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(targetEntity = Account.class, fetch = FetchType.LAZY, optional = false)
     private Account account;
 
     @Builder
