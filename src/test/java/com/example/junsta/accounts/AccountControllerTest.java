@@ -1,11 +1,14 @@
 package com.example.junsta.accounts;
 
 import com.example.junsta.common.BaseControllerTest;
+import com.example.junsta.posts.PostRepository;
+import com.example.junsta.posts.PostResponseDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -18,6 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class AccountControllerTest extends BaseControllerTest {
 
+    @Autowired
+    private PostRepository postRepository;
 
     @Autowired
     AccountRepository accountRepository;
@@ -25,6 +30,7 @@ public class AccountControllerTest extends BaseControllerTest {
 
     @Before
     public void setup() {
+        postRepository.deleteAll();
         accountRepository.deleteAll();
     }
 

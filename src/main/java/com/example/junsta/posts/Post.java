@@ -27,7 +27,7 @@ public class Post extends BaseEntity {
     private List<Comment> comments;
 
     @CreatedBy
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(targetEntity = Account.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, optional = false)
     private Account account;
 
     @Builder
