@@ -25,3 +25,4 @@
 /.nb-gradle/
 /src/main/resources/uploadedImages/ ### uploaded image files ###
 /dbProperties.properties
+.gitignore
