@@ -7,8 +7,29 @@ services:
 before_install:
   - chmod +x mvnw
 
+sudo: required
+
+cache:
+  directories:
+    - .autoconf
+    - $HOME/.m2
+
 script:
-  - ./mvnw clean package docker:build
+  # BUILD
+  - ./mvnw package
+
+  # GET NAME
+  - PRJ_NAME=$(./mvnw validate | grep "Building" | awk '{print $3}')
+  - PRJ_VERSION=$(./mvnw validate | grep "Building" | awk '{print $3}')
+
+  - echo "## PROJECT_NAME - ${PRJ_NAME}"
+  - echo "## PROJECT_VERSION - ${PRJ_VERSION}"
+
+  - PRJ_JAR=${PRJ_NAME}-${PRJ_VERSION}.jar
+
+  # DOCKER BUILD
+  - docker build -t ${PRJ_NAME}:latest --build-arg JAR_FILE=target/${PRJ_JAR} ./
+
 
 after_success:
   - mvn clean test jacoco:report coveralls:report
