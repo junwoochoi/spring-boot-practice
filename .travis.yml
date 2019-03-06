@@ -16,20 +16,27 @@ cache:
 
 script:
   # BUILD
-  - ./mvnw package
+  - ./mvnw clean package
 
-  # GET NAME
-  - PRJ_NAME=$(./mvnw validate | grep "Building" | awk '{print $3}')
-  - PRJ_VERSION=$(./mvnw validate | grep "Building" | awk '{print $4}')
 
-  - echo "## PROJECT_NAME - ${PRJ_NAME}"
-  - echo "## PROJECT_VERSION - ${PRJ_VERSION}"
+before_deploy:
+  - zip -r spring-boot-practice *
+  - mkdir -p deploy
+  - mv spring-boot-practice.zip deploy/spring-boot-practice.zip
 
-  - PRJ_JAR=${PRJ_NAME}-${PRJ_VERSION}.jar
-
-  # DOCKER BUILD
-  - sudo docker build -t ${PRJ_NAME}:latest --build-arg JAR_FILE=target/${PRJ_JAR} ./
-
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
+    bucket: today-i-learn-deploy # S3 버킷
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: public_read
+    local_dir: deploy # before_deploy에서 생성한 디렉토리
+    wait-until-deployed: true
+    on:
+        repo: junwoochoi/spring-boot-practice
+        branch: master
 
 after_success:
   - mvn clean test jacoco:report coveralls:report
