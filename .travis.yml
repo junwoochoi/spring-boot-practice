@@ -20,7 +20,7 @@ script:
 
   # GET NAME
   - PRJ_NAME=$(./mvnw validate | grep "Building" | awk '{print $3}')
-  - PRJ_VERSION=$(./mvnw validate | grep "Building" | awk '{print $4}')
+  - PRJ_VERSION=$(./mvnw validate | grep "Building" | awk '{print $4g}')
 
   - echo "## PROJECT_NAME - ${PRJ_NAME}"
   - echo "## PROJECT_VERSION - ${PRJ_VERSION}"
