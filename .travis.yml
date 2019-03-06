@@ -14,6 +14,7 @@ script:
 
 
 before_deploy:
+  - chmod 755 ./target/*.jar
   - zip -r spring-boot-practice *
   - mkdir -p deploy
   - mv spring-boot-practice.zip deploy/spring-boot-practice.zip
