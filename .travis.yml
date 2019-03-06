@@ -1,7 +1,14 @@
 language: java
 jdk: oraclejdk8
+
+services:
+  - docker
+
 before_install:
   - chmod +x mvnw
+
+script:
+  - mvnw clean package docker:build
 
 after_success:
   - mvn clean test jacoco:report coveralls:report
