@@ -1,18 +1,12 @@
 language: java
 jdk: oraclejdk8
 
-services:
-  - docker
 
 before_install:
   - chmod +x mvnw
 
 sudo: required
 
-cache:
-  directories:
-    - .autoconf
-    - $HOME/.m2
 
 script:
   # BUILD
