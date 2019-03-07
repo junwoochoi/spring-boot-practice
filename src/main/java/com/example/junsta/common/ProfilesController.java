@@ -13,7 +13,7 @@ public class ProfilesController {
     @Autowired
     private Environment env;
 
-    @GetMapping("/profile")
+    @GetMapping("/profiles")
     public String getProfile(){
         return Arrays.stream(env.getActiveProfiles())
                 .findFirst()

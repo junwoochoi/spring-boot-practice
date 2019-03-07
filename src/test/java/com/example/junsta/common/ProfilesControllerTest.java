@@ -10,7 +10,7 @@ public class ProfilesControllerTest extends BaseControllerTest {
 
     @Test
     public void  getProfile() throws Exception {
-        ResultActions perform = mockMvc.perform(get("/profile"));
+        ResultActions perform = mockMvc.perform(get("/profiles"));
 
         String response = perform.andReturn().getResponse().getContentAsString();
 
