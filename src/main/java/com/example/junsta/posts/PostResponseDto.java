@@ -25,7 +25,7 @@ public class PostResponseDto {
     private String createdBy;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private List<CommentDto> commentList = new ArrayList<>();
+    private List<CommentDto> commentList;
 
     public PostResponseDto(Post post){
         this.id = post.getId();

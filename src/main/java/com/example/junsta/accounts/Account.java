@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-@EqualsAndHashCode(of = {"email"})
+@EqualsAndHashCode(of = {"email"}, callSuper = false)
 public class Account extends BaseEntity {
 
 
