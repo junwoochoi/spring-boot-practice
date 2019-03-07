@@ -17,6 +17,7 @@ public class ProfilesController {
     public String getProfile(){
         return Arrays.stream(env.getActiveProfiles())
                 .findFirst()
+                .filter(e -> "set1".equals(e) || "set2".equals(e) || "test".equals(e))
                 .orElse("");
     }
 
