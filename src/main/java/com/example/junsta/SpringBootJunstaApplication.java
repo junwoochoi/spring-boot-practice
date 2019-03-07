@@ -2,6 +2,7 @@ package com.example.junsta;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -9,8 +10,16 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableAspectJAutoProxy
 public class SpringBootJunstaApplication {
 
+	public static final String APPLICATION_LOCATIONS = "spring.config.location="
+			+ "classpath:application.yml,"
+			+ "/app/config/spring-boot-practice-sns/real-application.yml";
+
 	public static void main(String[] args) {
-		SpringApplication.run(SpringBootJunstaApplication.class, args);
+		new SpringApplicationBuilder(SpringBootJunstaApplication.class)
+				.properties(APPLICATION_LOCATIONS)
+				.run(args);
 	}
 
 }
+
+
