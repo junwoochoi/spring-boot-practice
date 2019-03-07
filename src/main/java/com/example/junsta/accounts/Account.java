@@ -13,18 +13,19 @@ import java.util.stream.Stream;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
+@Table(name = "Account")
 @EqualsAndHashCode(of = {"email"}, callSuper = false)
 public class Account extends BaseEntity {
 
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "email",unique = true, nullable = false)
     @NaturalId
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "diplayName", nullable = false)
     private String displayName;
 
-    @Column(nullable = false)
+    @Column(name = "password",  nullable = false)
     private String password;
 
     @Enumerated(value = EnumType.STRING)

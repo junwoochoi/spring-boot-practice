@@ -8,17 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Getter
+@Table(name = "Comment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
-    @Column(length = 1000)
+    @Column(name = "CommentText",length = 1000)
     private String commentText;
 
     @ManyToOne(fetch = FetchType.LAZY)

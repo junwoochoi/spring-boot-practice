@@ -16,12 +16,13 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
+@Table(name = "Post")
 public class Post extends BaseEntity {
 
     @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UploadedImage uploadedImage;
 
-    @Column(nullable = true)
+    @Column(name = "PostText", nullable = true)
     private String postText;
 
     @OneToMany(fetch = FetchType.LAZY)

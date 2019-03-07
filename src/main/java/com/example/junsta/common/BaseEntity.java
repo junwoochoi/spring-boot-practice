@@ -15,11 +15,11 @@ public abstract class BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(updatable = false)
+    @Column(name = "CreatedAt",updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @Column
+    @Column(name = "ModifiedAt")
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 }
