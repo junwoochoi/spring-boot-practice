@@ -1,43 +1,55 @@
 spring:
   profiles:
-    active: local
+    active: local # 기본 환경 선택
 
+# local 환경
 ---
-
-
 spring:
+  profiles: local
   datasource:
-   url: jdbc:h2:mem:testdb
-   username: sa
-   password:
-   driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
   jpa:
+    show-sql: true
     properties:
       hibernate:
-        show_sql: true
-        use_sql_comments: true
-        format_sql: true
+        format-sql: true
+        use-sql-comments: true
+        ddl-auto: create-drop
         temp:
           use_jdbc_metadata_defaults: false
-    hibernate:
-      ddl-auto: create-drop
 
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
 
-logging:
-  level:
-    org:
-      apache:
-        http: DEBUG
+
 
 server:
   max-http-header-size: 160KB
 
 my-app:
-  client-id: myapp
-  secret: secret
-  test-email: test@email.com
-  test-password: test
+    client-id: myapp
+    secret: secret
+    test-email: test@email.com
+    test-password: test
+
+# 운영 환경
+---
+spring:
+  profiles: set1
+server:
+  port: 8081
+
+---
+spring:
+  profiles: set2
+
+server:
+  port: 8082
+
+spring:
+  datasource:
