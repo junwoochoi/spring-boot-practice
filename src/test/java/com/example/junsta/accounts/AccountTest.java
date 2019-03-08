@@ -19,6 +19,9 @@ public class AccountTest {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    AccountService accountService;
+
     @Before
     public void cleanup(){
         accountRepository.deleteAll();
@@ -32,11 +35,7 @@ public class AccountTest {
         String displayName = "최준우";
         String password = "password";
 
-        Account test = Account.builder()
-                .email(email)
-                .displayName(displayName)
-                .password(password)
-                .build();
+        Account test = createAccount(email, displayName, password);
 
         accountRepository.save(test);
 
@@ -48,7 +47,27 @@ public class AccountTest {
         assertThat(account.getDisplayName()).isEqualTo(displayName);
         assertThat(account.getPassword()).isEqualTo(password);
 
+    }
+
+    @Test
+    public void 팔로우_테스트(){
+        Account junu = createAccount("junu@email.com","최주누", "비번");
+        Account stalker = createAccount("stalker@email.com","스토커", "비번");
+
+        junu.startFollow(stalker);
 
 
+        assertThat(junu.getFollowingSet().size()).isGreaterThan(0);
+        assertThat(stalker.getBeFollowedSet().size()).isGreaterThan(0);
+
+    }
+
+
+    private Account createAccount(String email, String displayName, String password) {
+        return Account.builder()
+                    .email(email)
+                    .displayName(displayName)
+                    .password(password)
+                    .build();
     }
 }

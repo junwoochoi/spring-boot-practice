@@ -2,6 +2,7 @@ package com.example.junsta.comments;
 
 import com.example.junsta.accounts.Account;
 import com.example.junsta.common.BaseEntity;
+import com.example.junsta.posts.Post;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,16 +13,21 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "Comment")
+@Table(name = "comment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
-    @Column(name = "CommentText",length = 1000)
+    @Column(name = "comment_text",length = 1000)
     private String commentText;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", updatable = false)
     @CreatedBy
     private Account createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Post post;
 
     @Builder
     public Comment(String commentText) {

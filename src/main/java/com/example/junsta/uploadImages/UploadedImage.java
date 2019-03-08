@@ -8,22 +8,24 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "upload_image")
 public class UploadedImage extends BaseEntity {
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "image_path", nullable = false, updatable = false)
     private String imagePath;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "original_name", nullable = false, updatable = false)
     private String originalName;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "image_name", nullable = false, updatable = false)
     private String imageName;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "image_extension", nullable = false, updatable = false)
     private String imageExtension;
 
     @Builder
