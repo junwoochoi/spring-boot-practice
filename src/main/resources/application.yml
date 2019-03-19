@@ -1,7 +1,4 @@
 
-# application
-application:
-  title: @project.groupId@.@project.artifactId@ (@project.version@)
 
 spring:
   # IDENTITY
@@ -15,8 +12,6 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-
-
 
 server:
     max-http-header-size: 160KB

@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,8 +13,7 @@ import java.util.stream.Stream;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
-@Table(name = "Account")
+@Table(name = "account")
 @EqualsAndHashCode(of = {"email"}, callSuper = false)
 public class Account extends BaseEntity {
 
@@ -22,7 +22,7 @@ public class Account extends BaseEntity {
     @NaturalId
     private String email;
 
-    @Column(name = "diplayName", nullable = false)
+    @Column(name = "diplay_name", nullable = false)
     private String displayName;
 
     @Column(name = "password",  nullable = false)
@@ -31,6 +31,15 @@ public class Account extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<AccountRole> roles = Stream.of(AccountRole.ROLE_USER).collect(Collectors.toSet());
+
+    @ManyToMany
+    @JoinTable(name = "follow",
+            joinColumns = @JoinColumn(name = "following_user"),
+            inverseJoinColumns = @JoinColumn(name = "followed_user"))
+    private Set<Account> followingSet = new HashSet<>();
+
+    @ManyToMany(mappedBy = "followingSet")
+    private Set<Account> beFollowedSet = new HashSet<>();
 
     @Builder
     public Account(String email, String displayName, String password){
@@ -41,5 +50,10 @@ public class Account extends BaseEntity {
 
     public void updateAccount(AccountUpdateRequestDto dto) {
         this.displayName=dto.getDisplayName();
+    }
+
+    public void startFollow(Account followedUser) {
+        this.followingSet.add(followedUser);
+        followedUser.getBeFollowedSet().add(this);
     }
 }
