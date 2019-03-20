@@ -1,14 +1,16 @@
 package com.example.junsta.uploadImages;
 
+import com.example.junsta.accounts.Account;
 import com.example.junsta.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedBy;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -28,6 +30,12 @@ public class UploadedImage extends BaseEntity {
     @Column(name = "image_extension", nullable = false, updatable = false)
     private String imageExtension;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", updatable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @CreatedBy
+    private Account createdBy;
+
     @Builder
     public UploadedImage(String imagePath, String originalName, String imageName, String imageExtension) {
         this.imagePath = imagePath;
@@ -35,4 +43,5 @@ public class UploadedImage extends BaseEntity {
         this.imageName = imageName;
         this.imageExtension = imageExtension;
     }
+
 }
