@@ -5,24 +5,33 @@ spring:
   application:
     name: @project.artifactId@
   profiles:
-    active: local # ±âº» È¯°æ ¼±ÅÃ
+    active: local
 
 
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 5MB
+      max-request-size: 5MB
 
 server:
     max-http-header-size: 160KB
 
+# S3 ì„¤ì •
+cloud:
+  aws:
+    s3:
+      bucket: today-i-learn-deploy
+    region:
+      static: ap-northeast-2
+
+# testìš© my-app
 my-app:
   client-id: myapp
   secret: secret
   test-email: test@email.com
   test-password: test
 
-# local È¯°æ
+# local
 ---
 spring:
   profiles: local
@@ -44,7 +53,6 @@ spring:
 
 
 
-# ¿î¿µ È¯°æ
 ---
 
 spring.profiles: set1

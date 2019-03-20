@@ -1,5 +1,5 @@
-= Natural REST API Guide
-최준우;
+= SNS REST API Guide
+JUNWOO ;
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -11,6 +11,9 @@
 
 [[overview]]
 = 개요
+
+본 프로젝트는 사진형 SNS의 REST API를 구현하는 것으 목적으로 하고 있습니다.
+
 
 [[overview-http-verbs]]
 == HTTP 동사
