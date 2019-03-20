@@ -1,6 +1,7 @@
 package com.example.junsta.accounts;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
@@ -29,7 +30,7 @@ public class AccountController {
         Account account = accountService.save(dto);
 
 
-        return ResponseEntity.ok(new AccountResponseDto(account));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AccountResponseDto(account));
     }
 
     @DeleteMapping
