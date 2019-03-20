@@ -15,12 +15,16 @@ public class AccountController {
 
     @Autowired
     AccountService accountService;
+    @Autowired
+    AccountValidator accountValidator;
 
     @PostMapping
     public ResponseEntity createAccount(@RequestBody @Valid AccountRequestDto dto, Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors);
         }
+
+        accountValidator.validate(dto);
 
         Account account = accountService.save(dto);
 
