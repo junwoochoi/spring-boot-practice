@@ -23,6 +23,8 @@ cloud:
       bucket: today-i-learn-deploy
     region:
       static: ap-northeast-2
+    stack:
+      auto: false
 
 # test용 my-app
 my-app:
