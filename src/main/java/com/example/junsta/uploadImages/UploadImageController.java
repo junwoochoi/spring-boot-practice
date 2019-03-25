@@ -15,10 +15,19 @@ public class UploadImageController {
     @Autowired
     private S3ImageUploader s3ImageUploader;
 
+    @Autowired
+    private UploadedImageService uploadedImageService;
+
     @PostMapping
     public ResponseEntity uploadImage(@RequestParam("data") MultipartFile file) throws IOException {
-        String uploadResult = s3ImageUploader.upload(file, "static");
-        return ResponseEntity.ok(uploadResult);
+        if(!s3ImageUploader.validateType(file)){
+            return ResponseEntity.badRequest().build();
+        }
+        UploadedImageDto dto = s3ImageUploader.upload(file, "static");
+
+        UploadedImage savedImage = uploadedImageService.save(dto);
+
+        return ResponseEntity.ok(new UploadedImageDto(savedImage));
     }
 
     @DeleteMapping

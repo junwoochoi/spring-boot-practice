@@ -1,10 +1,15 @@
 package com.example.junsta.common;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.junsta.uploadImages.UploadedImage;
+import com.example.junsta.uploadImages.UploadedImageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,36 +19,53 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class S3ImageUploader {
 
-    private final AmazonS3Client amazonS3Client;
+    @Autowired
+    private AmazonS3 amazonS3;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
 
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+    public UploadedImageDto upload(MultipartFile multipartFile, String dirName) throws IOException {
         File uploadFile = convert(multipartFile).orElseThrow(
                 () -> new IllegalArgumentException("MultipartFile => File 변환에 실패했습니다.")
         );
         return upload(uploadFile, dirName);
     }
 
-    private String upload(File uploadFile, String dirName) {
-        String fileName = dirName + "/" + uploadFile.getName();
+    private UploadedImageDto upload(File uploadFile, String dirName) {
+        String fileName = dirName
+                + "/"
+                + UUID.randomUUID().toString()
+                +"."
+                + FilenameUtils.getExtension(uploadFile.getName());
         String uploadUrl = putS3(uploadFile, fileName);
 
+        UploadedImageDto dto = UploadedImageDto.builder()
+                .originalName(uploadFile.getName())
+                .imagePath(uploadUrl)
+                .imageName(uploadUrl.substring(uploadUrl.lastIndexOf("/")))
+                .imageExtension(FilenameUtils.getExtension(uploadFile.getName()))
+                .build();
+
         removeNewFile(uploadFile);
-        return uploadUrl;
+        return dto;
     }
 
     private String putS3(File uploadFile, String fileName) {
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        try {
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
+            return amazonS3.getUrl(bucket, fileName).toString();
+        } catch (Exception e) {
+            throw new AmazonS3Exception(bucket, e);
+        }
     }
 
     private void removeNewFile(File uploadFile) {
@@ -66,5 +88,13 @@ public class S3ImageUploader {
         }
 
         return Optional.empty();
+    }
+
+    public boolean validateType(MultipartFile file){
+        String mimeType = file.getContentType();
+        if(mimeType.contains("image/")){
+            return true;
+        }
+        return false;
     }
 }

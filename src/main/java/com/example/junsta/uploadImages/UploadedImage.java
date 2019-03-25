@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "upload_image")
+@Table(name = "uploaded_image")
 public class UploadedImage extends BaseEntity {
 
     @Column(name = "image_path", nullable = false, updatable = false)
@@ -30,11 +30,11 @@ public class UploadedImage extends BaseEntity {
     @Column(name = "image_extension", nullable = false, updatable = false)
     private String imageExtension;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", updatable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @CreatedBy
-    private Account createdBy;
+    @JoinColumn(name = "created_by")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(targetEntity = Account.class, fetch = FetchType.LAZY, optional = false)
+    private Account account;
 
     @Builder
     public UploadedImage(String imagePath, String originalName, String imageName, String imageExtension) {
@@ -43,5 +43,6 @@ public class UploadedImage extends BaseEntity {
         this.imageName = imageName;
         this.imageExtension = imageExtension;
     }
+
 
 }
