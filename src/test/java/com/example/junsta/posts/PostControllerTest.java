@@ -2,6 +2,7 @@ package com.example.junsta.posts;
 
 import com.example.junsta.accounts.Account;
 import com.example.junsta.accounts.AccountRequestDto;
+import com.example.junsta.accounts.AccountService;
 import com.example.junsta.common.BaseControllerTest;
 import com.example.junsta.uploadImages.UploadedImage;
 import com.example.junsta.uploadImages.UploadedImageRepository;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -24,7 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 public class PostControllerTest extends BaseControllerTest {
+
+    @Autowired
+    AccountService accountService;
 
     @Autowired
     private PostRepository postRepository;
@@ -34,18 +40,27 @@ public class PostControllerTest extends BaseControllerTest {
 
     @Test
     public void 포스트생성_성공() throws Exception {
-        PostRequestDto dto = PostRequestDto.builder()
-                .imageExtension("png")
-                .imageName("imageName")
-                .imagePath("imagePath")
+        String accessToken = getAccessToken();
+
+        UploadedImage image = UploadedImage.builder()
                 .originalName("originalName")
+                .imagePath("imagePath")
+                .imageName(UUID.randomUUID().toString())
+                .imageExtension("png")
+                .account(accountService.findByEmail(appProperties.getTestEmail()).get())
+                .build();
+
+        UploadedImage savedImage = uploadedImageRepository.save(image);
+
+        PostRequestDto dto = PostRequestDto.builder()
+                .uploadedImageId(savedImage.getId())
                 .postText("포스트내용입니다 블라블라")
                 .build();
 
         mockMvc.perform(
                 post("/api/post")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .header(HttpHeaders.AUTHORIZATION, accessToken)
                         .content(objectMapper.writeValueAsBytes(dto))
         )
                 .andDo(print())
@@ -54,10 +69,7 @@ public class PostControllerTest extends BaseControllerTest {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 정보 헤더")
                         ),
                         requestFields(
-                                fieldWithPath("imagePath").description("S3에 삽입된 이미지 경로"),
-                                fieldWithPath("originalName").description("S3에 삽입된 이미지의 원본 파일명"),
-                                fieldWithPath("imageName").description("S3에 삽입된 이미지의 현재 파일명"),
-                                fieldWithPath("imageExtension").description("S3에 삽입된 이미지 확장자"),
+                                fieldWithPath("uploadedImageId").description("S3에 삽입된 이미지의 id값"),
                                 fieldWithPath("postText").description("포스트 본문")
                         ),
                         responseFields(
@@ -89,11 +101,19 @@ public class PostControllerTest extends BaseControllerTest {
 
     @Test
     public void 포스트생성_권한없음_실패() throws Exception {
-        PostRequestDto dto = PostRequestDto.builder()
-                .imageExtension("png")
-                .imageName("imageName")
-                .imagePath("imagePath")
+        UploadedImage image = UploadedImage.builder()
                 .originalName("originalName")
+                .imagePath("imagePath")
+                .imageName(UUID.randomUUID().toString())
+                .imageExtension("png")
+                .account(accountService.findByEmail(appProperties.getTestEmail()).get())
+                .build();
+
+        UploadedImage savedImage = uploadedImageRepository.save(image);
+
+
+        PostRequestDto dto = PostRequestDto.builder()
+                .uploadedImageId(savedImage.getId())
                 .postText("포스트내용입니다 블라블라")
                 .build();
 
@@ -108,12 +128,20 @@ public class PostControllerTest extends BaseControllerTest {
 
     @Test
     public void 포스트생성_빈값입력_실패() throws Exception {
-        PostRequestDto dto = PostRequestDto.builder()
-                .imageExtension("png")
-                .imageName("")
-                .imagePath("")
+        UploadedImage image = UploadedImage.builder()
                 .originalName("originalName")
-                .postText("포스트내용입니다 블라블라")
+                .imagePath("imagePath")
+                .imageName(UUID.randomUUID().toString())
+                .imageExtension("png")
+                .account(accountService.findByEmail(appProperties.getTestEmail()).get())
+                .build();
+
+        UploadedImage savedImage = uploadedImageRepository.save(image);
+
+
+        PostRequestDto dto = PostRequestDto.builder()
+                .uploadedImageId(savedImage.getId())
+                .postText("")
                 .build();
 
         mockMvc.perform(
@@ -193,18 +221,20 @@ public class PostControllerTest extends BaseControllerTest {
     @Test
     public void 게시글_수정_성공() throws Exception {
         String accessToken = getAccessToken();
+        Account account = accountService.findByEmail(appProperties.getTestEmail()).get();
         Post post = Post.builder()
                 .postText("asdfasfd")
                 .uploadedImage(
                         UploadedImage.builder()
                                 .imagePath("imagePath")
                                 .originalName("originName")
-                                .imageName("imageName")
+                                .imageName(UUID.randomUUID().toString())
                                 .imageExtension("imageExtension")
+                                .account(account)
                                 .build()
                 )
                 .account(
-                        accountService.findByEmail(appProperties.getTestEmail()).get()
+                        account
                 )
                 .build();
         Post savedPost = postRepository.save(post);
@@ -260,18 +290,20 @@ public class PostControllerTest extends BaseControllerTest {
     @Test
     public void 게시글_수정_실패_빈값입력() throws Exception {
         String accessToken = getAccessToken();
+        Account account = accountService.findByEmail(appProperties.getTestEmail()).get();
         Post post = Post.builder()
                 .postText("asdfasfd")
                 .uploadedImage(
                         UploadedImage.builder()
                                 .imagePath("imagePath")
                                 .originalName("originName")
-                                .imageName("imageName")
+                                .imageName(UUID.randomUUID().toString())
+                                .account(account)
                                 .imageExtension("imageExtension")
                                 .build()
                 )
                 .account(
-                        accountService.findByEmail(appProperties.getTestEmail()).get()
+                        account
                 )
                 .build();
         Post savedPost = postRepository.save(post);
@@ -296,6 +328,7 @@ public class PostControllerTest extends BaseControllerTest {
     @Test
     public void 게시글_수정_실패_잘못된아이디값() throws Exception {
         String accessToken = getAccessToken();
+        Account account = accountService.findByEmail(appProperties.getTestEmail()).get();
         Post post = Post.builder()
                 .postText("asdfasfd")
                 .uploadedImage(
@@ -304,10 +337,11 @@ public class PostControllerTest extends BaseControllerTest {
                                 .originalName("originName")
                                 .imageName("imageName")
                                 .imageExtension("imageExtension")
+                                .account(account)
                                 .build()
                 )
                 .account(
-                        accountService.findByEmail(appProperties.getTestEmail()).get()
+                        account
                 )
                 .build();
         Post savedPost = postRepository.save(post);
@@ -344,7 +378,8 @@ public class PostControllerTest extends BaseControllerTest {
                         UploadedImage.builder()
                                 .imagePath("imagePath")
                                 .originalName("originName")
-                                .imageName("imageName")
+                                .imageName(UUID.randomUUID().toString())
+                                .account(savedAccount)
                                 .imageExtension("imageExtension")
                                 .build()
                 )
@@ -370,16 +405,17 @@ public class PostControllerTest extends BaseControllerTest {
     }
 
     private Post createPost(int i) {
+        Account account = accountService.findByEmail(appProperties.getTestEmail()).get();
         UploadedImage uploadedImage = UploadedImage.builder()
                 .imageExtension("imageExtension")
                 .imagePath("imagePath")
-                .imageName("imageName")
+                .account(account)
+                .imageName(UUID.randomUUID().toString())
                 .originalName("originName")
                 .build();
 
         UploadedImage savedUploadImage = uploadedImageRepository.save(uploadedImage);
 
-        Account account = accountService.findByEmail(appProperties.getTestEmail()).get();
         Post post = Post.builder()
                 .uploadedImage(savedUploadImage)
                 .postText("post" + i)

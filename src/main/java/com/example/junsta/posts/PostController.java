@@ -1,6 +1,7 @@
 package com.example.junsta.posts;
 
 import com.example.junsta.accounts.AccountAdapter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +14,11 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/post")
+@RequiredArgsConstructor
 public class PostController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
+    private final PostRequestValidator postRequestValidator;
 
     @GetMapping
     public ResponseEntity getPost(Pageable pageable){
@@ -30,7 +32,11 @@ public class PostController {
         if(errors.hasErrors()){
             return ResponseEntity.badRequest().body(errors.getFieldError());
         }
+
         dto.setAccount(accountAdapter.getAccount());
+
+        postRequestValidator.validateUploadedImage(dto, accountAdapter.getAccount());
+
         PostResponseDto responseDto = postService.uploadPost(dto);
         return ResponseEntity.ok(responseDto);
     }

@@ -5,6 +5,8 @@ import com.example.junsta.exceptions.PostNotExistException;
 import com.example.junsta.exceptions.UnauthorizedException;
 import com.example.junsta.uploadImages.UploadedImage;
 import com.example.junsta.uploadImages.UploadedImageRepository;
+import com.example.junsta.uploadImages.UploadedImageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,22 +16,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PostService {
 
-    @Autowired
-    private UploadedImageRepository uploadedImageRepository;
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+    private final UploadedImageService uploadedImageService;
+
 
     public PostResponseDto uploadPost(PostRequestDto dto) {
-        UploadedImage uploadedImage = dto.getUploadImageEntity();
-        uploadedImageRepository.save(uploadedImage);
 
+        Post post = Post.builder()
+                .account(dto.getAccount())
+                .uploadedImage(uploadedImageService.findById(dto.getUploadedImageId()).get())
+                .postText(dto.getPostText())
+                .build();
 
-        Post post = postRepository.save(dto.getPostEntity());
+        Post savedPost = postRepository.save(post);
 
-        return new PostResponseDto(post);
+        return new PostResponseDto(savedPost);
     }
 
     public Page<PostResponseDto> findAll(Pageable pageable) {
@@ -41,7 +46,7 @@ public class PostService {
     public PostResponseDto updatePost(PostUpdateRequestDto dto, Account account) {
         Post post = postRepository.findById(dto.getId()).orElseThrow(PostNotExistException::new);
 
-        if(!post.getAccount().equals(account)){
+        if (!post.getAccount().equals(account)) {
             throw new UnauthorizedException();
         }
 

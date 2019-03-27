@@ -11,7 +11,7 @@ public class SpringBootJunstaApplication {
     public static final String APPLICATION_LOCATIONS = "spring.config.location="
             + "classpath:application.yml,"
             + "/app/config/spring-boot-practice-sns/real-application.yml,"
-            + "classpath:aws.yml";
+            + "classpath:aws.properties";
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(SpringBootJunstaApplication.class)

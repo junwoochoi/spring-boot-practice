@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedBy;
@@ -24,7 +25,8 @@ public class UploadedImage extends BaseEntity {
     @Column(name = "original_name", nullable = false, updatable = false)
     private String originalName;
 
-    @Column(name = "image_name", nullable = false, updatable = false)
+    @NaturalId
+    @Column(name = "image_name", nullable = false, updatable = false, unique = true)
     private String imageName;
 
     @Column(name = "image_extension", nullable = false, updatable = false)
@@ -37,11 +39,12 @@ public class UploadedImage extends BaseEntity {
     private Account account;
 
     @Builder
-    public UploadedImage(String imagePath, String originalName, String imageName, String imageExtension) {
+    public UploadedImage(String imagePath, String originalName, String imageName, String imageExtension, Account account) {
         this.imagePath = imagePath;
         this.originalName = originalName;
         this.imageName = imageName;
         this.imageExtension = imageExtension;
+        this.account = account;
     }
 
 
