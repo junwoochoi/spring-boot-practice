@@ -31,7 +31,7 @@ public class UploadedImage extends BaseEntity {
     private String imageExtension;
 
     @CreatedBy
-    @JoinColumn(name = "created_by")
+    @JoinColumn(name = "account_id", columnDefinition = "created_by")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(targetEntity = Account.class, fetch = FetchType.LAZY, optional = false)
     private Account account;
