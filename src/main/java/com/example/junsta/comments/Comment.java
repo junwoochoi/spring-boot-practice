@@ -22,7 +22,7 @@ public class Comment extends BaseEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", columnDefinition = "created_by")
+    @JoinColumn(name = "created_by", referencedColumnName= "id")
     @CreatedBy
     private Account createdBy;
 

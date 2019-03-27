@@ -38,6 +38,7 @@ my-app:
 # local
 ---
 spring:
+
   profiles: local
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
@@ -49,11 +50,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQL9Dialect
-        format-sql: true
+        format_sql: true
         use-sql-comments: true
-        ddl-auto: create-drop
         temp:
           use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: create-drop
 ---
 
 spring.profiles: set1

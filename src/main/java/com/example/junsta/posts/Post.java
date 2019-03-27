@@ -32,7 +32,7 @@ public class Post extends BaseEntity {
     private List<Comment> comments;
 
     @CreatedBy
-    @JoinColumn(name = "account_id", columnDefinition = "created_by")
+    @JoinColumn(name = "created_by", referencedColumnName= "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(targetEntity = Account.class, fetch = FetchType.LAZY, optional = false)
     private Account account;
