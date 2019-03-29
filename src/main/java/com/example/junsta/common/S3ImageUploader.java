@@ -51,7 +51,7 @@ public class S3ImageUploader {
         UploadedImageDto dto = UploadedImageDto.builder()
                 .originalName(uploadFile.getName())
                 .imagePath(uploadUrl)
-                .imageName(uploadUrl.substring(uploadUrl.lastIndexOf("/")))
+                .imageName(uploadUrl.substring(uploadUrl.lastIndexOf("/")+1,uploadUrl.lastIndexOf(".")))
                 .imageExtension(FilenameUtils.getExtension(uploadFile.getName()))
                 .build();
 

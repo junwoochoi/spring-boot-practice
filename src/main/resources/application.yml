@@ -20,7 +20,7 @@ server:
 cloud:
   aws:
     s3:
-      bucket: today-i-learn-deploy
+      bucket: 'today-i-learn-deploy'
     region:
       static: ap-northeast-2
     stack:
@@ -42,8 +42,8 @@ spring:
   profiles: local
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: test
+    username: junsta
+    password: junsta
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
@@ -55,7 +55,7 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
 ---
 
 spring.profiles: set1
