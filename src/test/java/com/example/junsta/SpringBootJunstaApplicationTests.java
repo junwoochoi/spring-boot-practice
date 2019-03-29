@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-@TestPropertySource(locations = "classpath:aws.properties")
 public class SpringBootJunstaApplicationTests {
 
 	@Test

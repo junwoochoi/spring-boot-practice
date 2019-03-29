@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
 @ActiveProfiles("test")
-@TestPropertySource(locations = "classpath:aws.properties")
 public abstract class BaseControllerTest {
 
     @Autowired

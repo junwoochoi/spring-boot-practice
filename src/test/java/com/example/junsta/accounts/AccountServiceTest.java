@@ -2,14 +2,17 @@ package com.example.junsta.accounts;
 
 
 import com.example.junsta.common.AppProperties;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.ReflectionUtils;
 
 import java.util.List;
 
@@ -18,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-@TestPropertySource(locations = "classpath:aws.properties")
 public class AccountServiceTest {
 
 
@@ -26,6 +28,8 @@ public class AccountServiceTest {
     AccountService accountService;
     @Autowired
     PasswordEncoder passwordEncoder;
+
+
 
 
     @Test
