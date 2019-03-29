@@ -1,6 +1,7 @@
 package com.example.junsta.accounts;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
@@ -15,6 +16,8 @@ public class AccountController {
 
     @Autowired
     AccountService accountService;
+    @Autowired
+    AccountValidator accountValidator;
 
     @PostMapping
     public ResponseEntity createAccount(@RequestBody @Valid AccountRequestDto dto, Errors errors) {
@@ -22,10 +25,12 @@ public class AccountController {
             return ResponseEntity.badRequest().body(errors);
         }
 
+        accountValidator.validate(dto);
+
         Account account = accountService.save(dto);
 
 
-        return ResponseEntity.ok(new AccountResponseDto(account));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AccountResponseDto(account));
     }
 
     @DeleteMapping

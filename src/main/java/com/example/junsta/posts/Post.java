@@ -27,12 +27,12 @@ public class Post extends BaseEntity {
     private String postText;
 
 
-    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @OrderBy("createdAt ASC")
     private List<Comment> comments;
 
     @CreatedBy
-    @JoinColumn(name = "created_by")
+    @JoinColumn(name = "created_by", referencedColumnName= "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(targetEntity = Account.class, fetch = FetchType.LAZY, optional = false)
     private Account account;
@@ -47,8 +47,8 @@ public class Post extends BaseEntity {
 
 
     public void updateText(PostUpdateRequestDto dto) {
-        if(dto.getId()==this.getId()){
-            this.postText=dto.getPostText();
+        if (dto.getId() == this.getId()) {
+            this.postText = dto.getPostText();
         }
     }
 }

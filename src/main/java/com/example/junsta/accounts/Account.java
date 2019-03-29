@@ -22,7 +22,7 @@ public class Account extends BaseEntity {
     @NaturalId
     private String email;
 
-    @Column(name = "diplay_name", nullable = false)
+    @Column(name = "display_name", nullable = false)
     private String displayName;
 
     @Column(name = "password",  nullable = false)

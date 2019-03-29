@@ -68,7 +68,7 @@ public class AccountControllerTest extends BaseControllerTest {
                                 fieldWithPath("email").description("회원가입된 회원 이메일")
                         )
                 ))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("email").value(email))
                 .andExpect(jsonPath("displayName").value(displayName))
                 .andExpect(jsonPath("password").doesNotHaveJsonPath());

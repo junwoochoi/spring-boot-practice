@@ -17,12 +17,12 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
-    @Column(name = "comment_text",length = 1000)
+    @Column(name = "comment_text", length = 1000)
     private String commentText;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", updatable = false)
+    @JoinColumn(name = "created_by", referencedColumnName= "id")
     @CreatedBy
     private Account createdBy;
 
