@@ -53,7 +53,7 @@ public class PostControllerTest extends BaseControllerTest {
         UploadedImage savedImage = uploadedImageRepository.save(image);
 
         PostRequestDto dto = PostRequestDto.builder()
-                .uploadedImageId(savedImage.getId())
+                .uploadedImageName(savedImage.getImageName())
                 .postText("포스트내용입니다 블라블라")
                 .build();
 
@@ -69,7 +69,7 @@ public class PostControllerTest extends BaseControllerTest {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 정보 헤더")
                         ),
                         requestFields(
-                                fieldWithPath("uploadedImageId").description("S3에 삽입된 이미지의 id값"),
+                                fieldWithPath("uploadedImageName").description("S3에 삽입된 이미지의 Name값"),
                                 fieldWithPath("postText").description("포스트 본문")
                         ),
                         responseFields(
@@ -113,7 +113,7 @@ public class PostControllerTest extends BaseControllerTest {
 
 
         PostRequestDto dto = PostRequestDto.builder()
-                .uploadedImageId(savedImage.getId())
+                .uploadedImageName(savedImage.getImageName())
                 .postText("포스트내용입니다 블라블라")
                 .build();
 
@@ -140,7 +140,7 @@ public class PostControllerTest extends BaseControllerTest {
 
 
         PostRequestDto dto = PostRequestDto.builder()
-                .uploadedImageId(savedImage.getId())
+                .uploadedImageName(savedImage.getImageName())
                 .postText("")
                 .build();
 

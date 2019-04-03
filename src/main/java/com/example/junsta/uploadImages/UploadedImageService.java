@@ -27,4 +27,8 @@ public class UploadedImageService {
     public Optional<UploadedImage> findById(Long uploadedImageId) {
         return uploadedImageRepository.findById(uploadedImageId);
     }
+
+    public Optional<UploadedImage> findByImageName(String uploadedImageName) {
+        return uploadedImageRepository.findByImageName(uploadedImageName);
+    }
 }

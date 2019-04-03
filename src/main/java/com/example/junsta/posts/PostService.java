@@ -28,7 +28,7 @@ public class PostService {
 
         Post post = Post.builder()
                 .account(dto.getAccount())
-                .uploadedImage(uploadedImageService.findById(dto.getUploadedImageId()).get())
+                .uploadedImage(uploadedImageService.findByImageName(dto.getUploadedImageName()).get())
                 .postText(dto.getPostText())
                 .build();
 

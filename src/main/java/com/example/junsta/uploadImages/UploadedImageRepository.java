@@ -2,6 +2,8 @@ package com.example.junsta.uploadImages;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UploadedImageRepository extends JpaRepository<UploadedImage,Long> {
+import java.util.Optional;
 
+public interface UploadedImageRepository extends JpaRepository<UploadedImage,Long> {
+    Optional<UploadedImage> findByImageName(String imageName);
 }
