@@ -64,6 +64,7 @@ public class S3ImageUploader {
             amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
             return amazonS3.getUrl(bucket, fileName).toString();
         } catch (Exception e) {
+            removeNewFile(uploadFile);
             throw new AmazonS3Exception(bucket, e);
         }
     }
