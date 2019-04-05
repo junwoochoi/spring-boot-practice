@@ -1,10 +1,13 @@
 package com.example.junsta.posts;
 
+import com.example.junsta.accounts.Account;
 import com.example.junsta.accounts.AccountAdapter;
+import com.example.junsta.exceptions.PostNotExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
@@ -50,6 +53,17 @@ public class PostController {
 
         PostResponseDto responseDto = postService.updatePost(dto, accountAdapter.getAccount());
         return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping
+    public ResponseEntity deletePost(@RequestBody PostDeleteRequestDto dto,
+                                     @AuthenticationPrincipal AccountAdapter accountAdapter){
+        Account currentUser = accountAdapter.getAccount();
+
+
+        postService.deletePost(dto.getId(), currentUser);
+
+        return ResponseEntity.noContent().build();
     }
 }
 

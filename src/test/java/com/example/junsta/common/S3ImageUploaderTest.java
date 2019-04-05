@@ -30,6 +30,8 @@ public class S3ImageUploaderTest {
 
     @Before
     public void startMockS3(){
+
+        s3Mock.stop();
         s3Mock.start();
     }
 

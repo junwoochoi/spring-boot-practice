@@ -1,6 +1,6 @@
 package com.example.junsta.uploadImages;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,12 +8,12 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UploadedImageService {
 
-    @Autowired
-    private UploadedImageRepository uploadedImageRepository;
+    private final UploadedImageRepository uploadedImageRepository;
 
-    public UploadedImage save(UploadedImageDto dto){
+    public UploadedImage save(UploadedImageDto dto) {
         UploadedImage image = UploadedImage.builder()
                 .imageExtension(dto.getImageExtension())
                 .imageName(dto.getImageName())
@@ -30,5 +30,14 @@ public class UploadedImageService {
 
     public Optional<UploadedImage> findByImageName(String uploadedImageName) {
         return uploadedImageRepository.findByImageName(uploadedImageName);
+    }
+
+
+    public void delete(Long id) {
+
+        Optional<UploadedImage> uploadedImage = findById(id);
+        if (uploadedImage.isPresent()) {
+            uploadedImageRepository.delete(uploadedImage.get());
+        }
     }
 }
