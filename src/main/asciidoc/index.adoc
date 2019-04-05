@@ -12,7 +12,7 @@ JUNWOO ;
 [[overview]]
 = 개요
 
-본 프로젝트는 사진형 SNS의 REST API를 구현하는 것으 목적으로 하고 있습니다.
+본 프로젝트는 사진형 SNS의 REST API를 구현하는 것을 목적으로 하고 있습니다.
 
 
 [[overview-http-verbs]]
@@ -63,33 +63,10 @@ JUNWOO ;
 | 요청한 리소스가 없음.
 |===
 
-[[overview-errors]]
-== 오류
-
-에러 응답이 발생했을 때 (상태 코드 >= 400), 본문에 해당 문제를 기술한 JSON 객체가 담겨있다. 에러 객체는 다음의 구조를 따른다.
-
-include::{snippets}/errors/response-fields.adoc[]
-
-예를 들어, 잘못된 요청으로 이벤트를 만들려고 했을 때 다음과 같은 `400 Bad Request` 응답을 받는다.
-
-include::{snippets}/errors/http-response.adoc[]
 
 [[resources]]
 = 리소스
 
-[[resources-index]]
-== 인덱스
-
-인덱스는 서비스 진입점을 제공한다.
-
-
-
-[[resources-index-access]]
-=== 인덱스 조회
-
-`GET` 요청을 사용하여 인덱스에 접근할 수 있다.
-
-operation::index[snippets='response-body,http-response']
 
 [[resources-token]]
 == 토큰
@@ -101,14 +78,14 @@ operation::index[snippets='response-body,http-response']
 
 `POST` 요청을 사용하여 토큰을 발급 받을 수 있다.
 
-operation::get-token[snippets='request-parameters,curl-request,http-response']
+operation::get-token[snippets='http-request,request-body,request-headers,request-parameters,curl-request,http-response,response-body,response-fields']
 
 [[resources-token-get]]
 === 토큰 이용한 로그인
 
 토큰을 이용한 로그인
 
-operation::oauth-authorization[snippets='request-,curl-request,http-response']
+operation::oauth-authorization[snippets='http-request,request-body,curl-request,http-response,response-body']
 
 
 [[resources-account]]
@@ -121,7 +98,7 @@ operation::oauth-authorization[snippets='request-,curl-request,http-response']
 
 `POST` 요청을 사용해서 새 회원을 만들 수 있다.
 
-operation::create-account[snippets='request-fields,curl-request,http-response']
+operation::create-account[snippets='request-headers,request-fields,curl-request,http-request,response-fields,http-response']
 
 
 [[resources-accounts-update]]
@@ -129,14 +106,14 @@ operation::create-account[snippets='request-fields,curl-request,http-response']
 
 `PUT` 요청을 사용해서 기존 회원정보를 수정할 수 있다.
 
-operation::update-account[snippets='request-fields,curl-request,http-response']
+operation::update-account[snippets='http-request,request-headers,request-fields,curl-request,http-response,response-headers,response-fields']
 
 [[resources-accounts-delete]]
 === 회원탈퇴
 
 `DELETE` 요청을 사용해서 기존 회원이 탈퇴할 수 있다.
 
-operation::delete-account[snippets='request-fields,curl-request,http-response']
+operation::delete-account[snippets='request-headers,request-fields,curl-request,http-response']
 
 [[resources-post]]
 == 게시글
@@ -155,7 +132,7 @@ operation::get-posts[snippets='request-headers, request-parameters, response-fie
 
 `POST` 요청을 사용해서 새 게시글을 만들 수 있다.
 
-operation::create-post[snippets='request-fields,curl-request,http-response']
+operation::create-post[snippets='request-headers,request-fields,curl-request,response-body,response-fields,http-response']
 
 [[resources-posts-get]]
 === 게시글 조회
@@ -169,7 +146,7 @@ operation::get-posts[snippets='request-fields,curl-request,http-response']
 
 `PUT` 요청을 사용해서 기존 게시글을 수정할 수 있다.
 
-operation::update-post[snippets='request-fields,curl-request,http-response']
+operation::update-post[snippets='request-headers,request-fields,curl-request,response-body,response-fields,http-response']
 
 [[resources-posts-delete]]
 === 게시글 삭제

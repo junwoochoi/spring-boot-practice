@@ -60,7 +60,7 @@ public class AuthControllerTest extends BaseControllerTest {
         String email = "test@email.com";
         String password = "password";
         AccountRequestDto dto = AccountRequestDto.builder()
-                .displayName("닉네임")
+                .displayName("nikkName")
                 .email(email)
                 .password(password)
                 .build();
@@ -102,7 +102,7 @@ public class AuthControllerTest extends BaseControllerTest {
         String email = "test@email.com";
         String password = "password";
         AccountRequestDto dto = AccountRequestDto.builder()
-                .displayName("닉네임")
+                .displayName("nikkName")
                 .email(email)
                 .password(password)
                 .build();
