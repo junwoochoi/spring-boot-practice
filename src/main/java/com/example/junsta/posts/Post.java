@@ -20,6 +20,7 @@ import java.util.List;
 public class Post extends BaseEntity {
 
     @JoinColumn(name = "upload_image_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UploadedImage uploadedImage;
 

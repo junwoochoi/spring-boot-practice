@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/image")
+@RequestMapping("/api/images")
 public class UploadImageController {
 
     @Autowired
@@ -30,8 +30,5 @@ public class UploadImageController {
         return ResponseEntity.ok(new UploadedImageDto(savedImage));
     }
 
-    @DeleteMapping
-    public ResponseEntity deleteImage(String ImageName){
-        return ResponseEntity.ok().build();
-    }
+
 }

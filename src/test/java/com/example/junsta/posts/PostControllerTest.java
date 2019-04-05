@@ -4,17 +4,27 @@ import com.example.junsta.accounts.Account;
 import com.example.junsta.accounts.AccountRequestDto;
 import com.example.junsta.accounts.AccountService;
 import com.example.junsta.common.BaseControllerTest;
+import com.example.junsta.common.S3ImageUploader;
+import com.example.junsta.common.S3MockConfig;
 import com.example.junsta.uploadImages.UploadedImage;
+import com.example.junsta.uploadImages.UploadedImageDto;
 import com.example.junsta.uploadImages.UploadedImageRepository;
+import io.findify.s3mock.S3Mock;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -26,7 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@Transactional
+@Import(S3MockConfig.class)
 public class PostControllerTest extends BaseControllerTest {
 
     @Autowired
@@ -37,6 +48,23 @@ public class PostControllerTest extends BaseControllerTest {
 
     @Autowired
     private UploadedImageRepository uploadedImageRepository;
+
+    @Autowired
+    private S3ImageUploader s3ImageUploader;
+    @Autowired
+    S3Mock s3Mock;
+
+    @Before
+    public void setup() {
+        createTestAccount();
+        s3Mock.stop();
+        s3Mock.start();
+    }
+
+    @After
+    public void stopMockS3() {
+        s3Mock.stop();
+    }
 
     @Test
     public void 포스트생성_성공() throws Exception {
@@ -53,12 +81,12 @@ public class PostControllerTest extends BaseControllerTest {
         UploadedImage savedImage = uploadedImageRepository.save(image);
 
         PostRequestDto dto = PostRequestDto.builder()
-                .uploadedImageId(savedImage.getId())
+                .uploadedImageName(savedImage.getImageName())
                 .postText("포스트내용입니다 블라블라")
                 .build();
 
         mockMvc.perform(
-                post("/api/post")
+                post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, accessToken)
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -69,7 +97,7 @@ public class PostControllerTest extends BaseControllerTest {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("인증 정보 헤더")
                         ),
                         requestFields(
-                                fieldWithPath("uploadedImageId").description("S3에 삽입된 이미지의 id값"),
+                                fieldWithPath("uploadedImageName").description("S3에 삽입된 이미지의 Name값"),
                                 fieldWithPath("postText").description("포스트 본문")
                         ),
                         responseFields(
@@ -113,12 +141,12 @@ public class PostControllerTest extends BaseControllerTest {
 
 
         PostRequestDto dto = PostRequestDto.builder()
-                .uploadedImageId(savedImage.getId())
+                .uploadedImageName(savedImage.getImageName())
                 .postText("포스트내용입니다 블라블라")
                 .build();
 
         mockMvc.perform(
-                post("/api/post")
+                post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(objectMapper.writeValueAsBytes(dto))
         )
@@ -140,12 +168,12 @@ public class PostControllerTest extends BaseControllerTest {
 
 
         PostRequestDto dto = PostRequestDto.builder()
-                .uploadedImageId(savedImage.getId())
+                .uploadedImageName(savedImage.getImageName())
                 .postText("")
                 .build();
 
         mockMvc.perform(
-                post("/api/post")
+                post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -157,11 +185,10 @@ public class PostControllerTest extends BaseControllerTest {
     @Test
     @Transactional
     public void 포스트_받아오기_성공() throws Exception {
-        getAccessToken();
         IntStream.range(0, 30).forEach(this::createPost);
 
 
-        mockMvc.perform(get("/api/post")
+        mockMvc.perform(get("/api/posts")
                 .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .param("page", "1")
                 .param("size", "10")
@@ -245,7 +272,7 @@ public class PostControllerTest extends BaseControllerTest {
         dto.setId(savedPost.getId());
 
         mockMvc.perform(
-                put("/api/post")
+                put("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, accessToken)
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -314,7 +341,7 @@ public class PostControllerTest extends BaseControllerTest {
         dto.setId(savedPost.getId());
 
         mockMvc.perform(
-                put("/api/post")
+                put("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, accessToken)
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -352,7 +379,7 @@ public class PostControllerTest extends BaseControllerTest {
         dto.setId(Long.valueOf(-1));
 
         mockMvc.perform(
-                put("/api/post")
+                put("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, accessToken)
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -393,7 +420,7 @@ public class PostControllerTest extends BaseControllerTest {
         dto.setId(savedPost.getId());
 
         mockMvc.perform(
-                put("/api/post")
+                put("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -404,25 +431,75 @@ public class PostControllerTest extends BaseControllerTest {
 
     }
 
+    @Test
+    public void 게시글_삭제_성공() throws Exception {
+        String accessToken = getAccessToken();
+
+        IntStream.range(0, 3).forEach(this::createPost);
+
+        Post post = postRepository.findAll().get(0);
+        PostDeleteRequestDto dto = new PostDeleteRequestDto(post.getId());
+
+        mockMvc.perform(
+                delete("/api/posts")
+                        .header(HttpHeaders.AUTHORIZATION, accessToken)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        assertThat(uploadedImageRepository.findByImageName(post.getUploadedImage().getImageName()).isPresent()).isFalse();
+        assertThat(postRepository.findById(post.getId()).isPresent()).isFalse();
+    }
+
+    @Test
+    public void 게시글_삭제_권한없음() throws Exception {
+        IntStream.range(0, 3).forEach(this::createPost);
+
+        Post post = postRepository.findAll().get(0);
+        PostDeleteRequestDto dto = new PostDeleteRequestDto(post.getId());
+
+        mockMvc.perform(
+                delete("/api/posts")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+
     private Post createPost(int i) {
-        Account account = accountService.findByEmail(appProperties.getTestEmail()).get();
-        UploadedImage uploadedImage = UploadedImage.builder()
-                .imageExtension("imageExtension")
-                .imagePath("imagePath")
-                .account(account)
-                .imageName(UUID.randomUUID().toString())
-                .originalName("originName")
-                .build();
+        Post post = null;
+        try {
 
-        UploadedImage savedUploadImage = uploadedImageRepository.save(uploadedImage);
+            Account account = accountService.findByEmail(appProperties.getTestEmail()).get();
+            MockMultipartFile file = new MockMultipartFile("data", "test.png", "/image/png", "testtest".getBytes());
+            UploadedImageDto uploadedImageDto = null;
 
-        Post post = Post.builder()
-                .uploadedImage(savedUploadImage)
-                .postText("post" + i)
-                .account(account)
-                .build();
+            uploadedImageDto = s3ImageUploader.upload(file, "static");
+            UploadedImage uploadedImage = UploadedImage.builder()
+                    .imageExtension(uploadedImageDto.getImageExtension())
+                    .imagePath(uploadedImageDto.getImagePath())
+                    .account(account)
+                    .imageName(uploadedImageDto.getImageName())
+                    .originalName(uploadedImageDto.getOriginalName())
+                    .build();
 
+            UploadedImage savedUploadImage = uploadedImageRepository.save(uploadedImage);
+
+            post = Post.builder()
+                    .uploadedImage(savedUploadImage)
+                    .postText("post" + i)
+                    .account(account)
+                    .build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return postRepository.save(post);
     }
+
 
 }

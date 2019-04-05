@@ -26,8 +26,7 @@ import java.util.UUID;
 @Component
 public class S3ImageUploader {
 
-    @Autowired
-    private AmazonS3 amazonS3;
+    private final AmazonS3 amazonS3;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -51,7 +50,7 @@ public class S3ImageUploader {
         UploadedImageDto dto = UploadedImageDto.builder()
                 .originalName(uploadFile.getName())
                 .imagePath(uploadUrl)
-                .imageName(uploadUrl.substring(uploadUrl.lastIndexOf("/")))
+                .imageName(uploadUrl.substring(uploadUrl.lastIndexOf("/")+1,uploadUrl.lastIndexOf(".")))
                 .imageExtension(FilenameUtils.getExtension(uploadFile.getName()))
                 .build();
 
@@ -64,6 +63,7 @@ public class S3ImageUploader {
             amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
             return amazonS3.getUrl(bucket, fileName).toString();
         } catch (Exception e) {
+            removeNewFile(uploadFile);
             throw new AmazonS3Exception(bucket, e);
         }
     }

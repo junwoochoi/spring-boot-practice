@@ -22,8 +22,8 @@ public class PostRequestDto {
 
 
 
-    @NotNull(message = "uploadedImageId should not be null")
-    private Long uploadedImageId;
+    @NotNull @NotBlank(message = "uploadedImageName should not be null or blank")
+    private String uploadedImageName;
     @NotEmpty @NotBlank(message = "postText should not be blank")
     private String postText;
     @JsonIgnore

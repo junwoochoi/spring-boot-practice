@@ -18,7 +18,7 @@ public class PostRequestValidator {
     @Transactional
     public void validateUploadedImage(PostRequestDto dto, Account account){
 
-        UploadedImage uploadedImage = uploadedImageService.findById(dto.getUploadedImageId()).orElseThrow(UploadedImageNotExistException::new);
+        UploadedImage uploadedImage = uploadedImageService.findByImageName(dto.getUploadedImageName()).orElseThrow(UploadedImageNotExistException::new);
 
         if(!uploadedImage.getAccount().equals(account)){
             throw new UnauthorizedException();
