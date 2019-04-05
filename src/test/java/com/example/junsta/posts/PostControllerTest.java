@@ -58,7 +58,7 @@ public class PostControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(
-                post("/api/post")
+                post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, accessToken)
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -118,7 +118,7 @@ public class PostControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(
-                post("/api/post")
+                post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(objectMapper.writeValueAsBytes(dto))
         )
@@ -145,7 +145,7 @@ public class PostControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(
-                post("/api/post")
+                post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -161,7 +161,7 @@ public class PostControllerTest extends BaseControllerTest {
         IntStream.range(0, 30).forEach(this::createPost);
 
 
-        mockMvc.perform(get("/api/post")
+        mockMvc.perform(get("/api/posts")
                 .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .param("page", "1")
                 .param("size", "10")
@@ -245,7 +245,7 @@ public class PostControllerTest extends BaseControllerTest {
         dto.setId(savedPost.getId());
 
         mockMvc.perform(
-                put("/api/post")
+                put("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, accessToken)
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -314,7 +314,7 @@ public class PostControllerTest extends BaseControllerTest {
         dto.setId(savedPost.getId());
 
         mockMvc.perform(
-                put("/api/post")
+                put("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, accessToken)
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -352,7 +352,7 @@ public class PostControllerTest extends BaseControllerTest {
         dto.setId(Long.valueOf(-1));
 
         mockMvc.perform(
-                put("/api/post")
+                put("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, accessToken)
                         .content(objectMapper.writeValueAsBytes(dto))
@@ -393,7 +393,7 @@ public class PostControllerTest extends BaseControllerTest {
         dto.setId(savedPost.getId());
 
         mockMvc.perform(
-                put("/api/post")
+                put("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .content(objectMapper.writeValueAsBytes(dto))
