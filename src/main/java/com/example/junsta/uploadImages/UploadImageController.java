@@ -30,8 +30,5 @@ public class UploadImageController {
         return ResponseEntity.ok(new UploadedImageDto(savedImage));
     }
 
-    @DeleteMapping
-    public ResponseEntity deleteImage(String ImageName){
-        return ResponseEntity.ok().build();
-    }
+
 }
