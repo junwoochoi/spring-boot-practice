@@ -1,5 +1,6 @@
 package com.example.junsta.posts;
 
+import akka.http.javadsl.Http;
 import com.example.junsta.accounts.Account;
 import com.example.junsta.accounts.AccountRequestDto;
 import com.example.junsta.accounts.AccountService;
@@ -447,6 +448,14 @@ public class PostControllerTest extends BaseControllerTest {
                         .content(objectMapper.writeValueAsBytes(dto))
         )
                 .andDo(print())
+                .andDo(document("delete-post",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 정보")
+                        ),
+                        requestFields(
+                                fieldWithPath("id").description("게시글 id")
+                        )
+                        ))
                 .andExpect(status().isNoContent());
 
         assertThat(uploadedImageRepository.findByImageName(post.getUploadedImage().getImageName()).isPresent()).isFalse();

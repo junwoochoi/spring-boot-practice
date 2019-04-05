@@ -139,42 +139,42 @@ operation::update-account[snippets='request-fields,curl-request,http-response']
 operation::delete-account[snippets='request-fields,curl-request,http-response']
 
 [[resources-post]]
-== 포스트
+== 게시글
 
-포스트 리소스는 포스트를 만들거나 조회할 때 사용한다.
+게시글 리소스는 게시글을 만들거나 조회할 때 사용한다.
 
 [[resources-post-list]]
-=== 포스트 목록 조회
+=== 게시글 목록 조회
 
-`GET` 요청을 사용하여 서비스의 모든 포스트를 조회할 수 있다.
+`GET` 요청을 사용하여 서비스의 모든 게시글을 조회할 수 있다.
 
-operation::get-posts[snippets='response-fields,curl-request,http-response']
+operation::get-posts[snippets='request-headers, request-parameters, response-fields,curl-request,http-response']
 
 [[resources-posts-post]]
-=== 포스트 생성
+=== 게시글 생성
 
-`POST` 요청을 사용해서 새 포스트를 만들 수 있다.
+`POST` 요청을 사용해서 새 게시글을 만들 수 있다.
 
 operation::create-post[snippets='request-fields,curl-request,http-response']
 
 [[resources-posts-get]]
-=== 포스트 조회
+=== 게시글 조회
 
-`Get` 요청을 사용해서 기존 포스트 하나를 조회할 수 있다.
+`Get` 요청을 사용해서 기존 게시글 하나를 조회할 수 있다.
 
 operation::get-posts[snippets='request-fields,curl-request,http-response']
 
 [[resources-posts-update]]
-=== 포스트 수정
+=== 게시글 수정
 
-`PUT` 요청을 사용해서 기존 포스트를 수정할 수 있다.
+`PUT` 요청을 사용해서 기존 게시글을 수정할 수 있다.
 
 operation::update-post[snippets='request-fields,curl-request,http-response']
 
 [[resources-posts-delete]]
-=== 포스트 삭제
+=== 게시글 삭제
 
-`DELETE` 요청을 사용해서 기존 포스트를 삭제할 수 있다.
+`DELETE` 요청을 사용해서 기존 게시글을 삭제할 수 있다.
 
 operation::delete-post[snippets='request-fields,curl-request,http-response']
 
