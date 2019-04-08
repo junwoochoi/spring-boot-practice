@@ -1,9 +1,8 @@
 package com.example.junsta.posts;
 
-import com.example.junsta.comments.CommentDto;
+import com.example.junsta.comments.CommentResponseDto;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class PostResponseDto {
     private String createdBy;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private List<CommentDto> commentList = new ArrayList<>();
+    private List<CommentResponseDto> commentList = new ArrayList<>();
 
     public PostResponseDto(Post post){
         this.id = post.getId();
@@ -38,7 +37,7 @@ public class PostResponseDto {
         this.postText=post.getPostText();
         this.modifiedAt=post.getModifiedAt();
         if(post.getComments()!=null){
-            this.commentList= post.getComments().stream().map(comment -> new CommentDto(comment)).collect(Collectors.toList());
+            this.commentList= post.getComments().stream().map(comment -> new CommentResponseDto(comment)).collect(Collectors.toList());
         }
     }
 }
