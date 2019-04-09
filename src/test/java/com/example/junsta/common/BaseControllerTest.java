@@ -19,6 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -31,6 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
 @ActiveProfiles("test")
+@Transactional
 public abstract class BaseControllerTest {
 
     @Autowired

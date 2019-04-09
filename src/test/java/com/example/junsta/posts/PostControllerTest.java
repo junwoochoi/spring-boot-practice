@@ -1,6 +1,5 @@
 package com.example.junsta.posts;
 
-import akka.http.javadsl.Http;
 import com.example.junsta.accounts.Account;
 import com.example.junsta.accounts.AccountRequestDto;
 import com.example.junsta.accounts.AccountService;
@@ -21,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -110,9 +108,7 @@ public class PostControllerTest extends BaseControllerTest {
                                 fieldWithPath("postText").description("포스트 본문"),
                                 fieldWithPath("createdBy").description("포스트 작성자 이메일"),
                                 fieldWithPath("createdAt").description("포스트 작성 일시"),
-                                fieldWithPath("modifiedAt").description("포스트 수정 일시"),
-                                fieldWithPath("commentList").description("포스트에 달린 댓글리스트")
-
+                                fieldWithPath("modifiedAt").description("포스트 수정 일시")
                         )
                 ))
                 .andExpect(status().isOk())
@@ -120,7 +116,6 @@ public class PostControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("originalName").exists())
                 .andExpect(jsonPath("imagePath").exists())
                 .andExpect(jsonPath("imageExtension").exists())
-                .andExpect(jsonPath("commentList").exists())
                 .andExpect(jsonPath("postText").exists())
                 .andExpect(jsonPath("createdAt").exists())
                 .andExpect(jsonPath("modifiedAt").exists())
@@ -216,7 +211,6 @@ public class PostControllerTest extends BaseControllerTest {
                                 fieldWithPath("content[].createdBy").description("포스트 작성자 이메일"),
                                 fieldWithPath("content[].createdAt").description("포스트 작성 일시"),
                                 fieldWithPath("content[].modifiedAt").description("포스트 수정 일시"),
-                                fieldWithPath("content[].commentList").description("포스트에 달린 댓글리스트"),
                                 fieldWithPath("pageable").description("페이징 관련 정보"),
                                 fieldWithPath("pageable.sort").description("페이징 내 정렬 관련 정보"),
                                 fieldWithPath("pageable.sort.sorted").description("페이지 정렬 여부"),
@@ -296,17 +290,15 @@ public class PostControllerTest extends BaseControllerTest {
                                 fieldWithPath("postText").description("포스트 본문"),
                                 fieldWithPath("createdBy").description("포스트 작성자 이메일"),
                                 fieldWithPath("createdAt").description("포스트 작성 일시"),
-                                fieldWithPath("modifiedAt").description("포스트 수정 일시"),
-                                fieldWithPath("commentList").description("포스트에 달린 댓글리스트")
-
+                                fieldWithPath("modifiedAt").description("포스트 수정 일시")
                         )
                 ))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("imageName").exists())
                 .andExpect(jsonPath("originalName").exists())
                 .andExpect(jsonPath("imagePath").exists())
                 .andExpect(jsonPath("imageExtension").exists())
-                .andExpect(jsonPath("commentList").exists())
                 .andExpect(jsonPath("postText").exists())
                 .andExpect(jsonPath("createdAt").exists())
                 .andExpect(jsonPath("modifiedAt").exists())

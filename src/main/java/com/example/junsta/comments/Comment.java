@@ -30,7 +30,9 @@ public class Comment extends BaseEntity {
     private Post post;
 
     @Builder
-    public Comment(String commentText) {
+    public Comment(String commentText, Post post, Account account) {
         this.commentText = commentText;
+        this.post = post;
+        this.createdBy = account;
     }
 }

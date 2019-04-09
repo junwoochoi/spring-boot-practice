@@ -47,6 +47,10 @@ public class PostService {
         return posts.map((post -> new PostResponseDto(post)));
     }
 
+    public Optional<Post> findById(Long id){
+        return postRepository.findById(id);
+    }
+
     public PostResponseDto updatePost(PostUpdateRequestDto dto, Account account) {
         Post post = postRepository.findById(dto.getId()).orElseThrow(PostNotExistException::new);
 

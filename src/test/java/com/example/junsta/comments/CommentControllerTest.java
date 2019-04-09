@@ -9,9 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,7 +30,7 @@ public class CommentControllerTest extends BaseControllerTest {
     UploadedImageRepository uploadedImageRepository;
 
     @Before
-    public void setup(){
+    public void setup() {
         createTestAccount();
     }
 
@@ -56,21 +58,38 @@ public class CommentControllerTest extends BaseControllerTest {
                 .build();
 
         mockMvc.perform(post("/api/comments")
-                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
-                        .content(objectMapper.writeValueAsBytes(dto))
+                .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsBytes(dto))
         )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("commentText").exists())
                 .andExpect(jsonPath("createdBy").exists())
+                .andExpect(jsonPath("modifiedAt").exists())
                 .andExpect(jsonPath("createdAt").exists())
-                .andExpect(jsonPath("commentId").exists());
+                .andExpect(jsonPath("id").exists());
+    }
 
+    @Test
+    public void 댓글달기_게시글존재안함() throws Exception {
+        CommentRequestDto dto = CommentRequestDto.builder()
+                .postId(Long.valueOf(114634623))
+                .commentText("this is comment contents")
+                .build();
+
+        mockMvc.perform(
+                post("/api/comments")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andExpect(status().isBadRequest());
 
     }
 
     @Test
-    public void 댓글달기_댓글존재안함(){
+    public void 댓글달기_입력값_유효성검사_빈내용입력() throws Exception {
         UploadedImage uploadedImage = UploadedImage.builder()
                 .imageExtension("png")
                 .imageName(UUID.randomUUID().toString())
@@ -78,15 +97,59 @@ public class CommentControllerTest extends BaseControllerTest {
                 .originalName("originalName")
                 .account(createTestAccount())
                 .build();
+        uploadedImageRepository.save(uploadedImage);
 
         Post post = Post.builder()
                 .postText("Hello Im Post blabla")
                 .account(createTestAccount())
                 .uploadedImage(uploadedImage)
                 .build();
-
         postRepository.save(post);
 
+        CommentRequestDto dto = CommentRequestDto.builder()
+                .postId(post.getId())
+                .commentText("")
+                .build();
+
+        mockMvc.perform(
+                post("/api/comments")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    public void 댓글달기_입력값_유효성검사_id없음() throws Exception {
+        UploadedImage uploadedImage = UploadedImage.builder()
+                .imageExtension("png")
+                .imageName(UUID.randomUUID().toString())
+                .imagePath("asdafasfasfasfd")
+                .originalName("originalName")
+                .account(createTestAccount())
+                .build();
+        uploadedImageRepository.save(uploadedImage);
+
+        Post post = Post.builder()
+                .postText("Hello Im Post blabla")
+                .account(createTestAccount())
+                .uploadedImage(uploadedImage)
+                .build();
+        postRepository.save(post);
+
+        CommentRequestDto dto = CommentRequestDto.builder()
+                .commentText("sadfasdf")
+                .build();
+
+        mockMvc.perform(
+                post("/api/comments")
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andExpect(status().isBadRequest());
 
     }
 

@@ -24,7 +24,6 @@ public class PostResponseDto {
     private String createdBy;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private List<CommentResponseDto> commentList = new ArrayList<>();
 
     public PostResponseDto(Post post){
         this.id = post.getId();
@@ -36,8 +35,5 @@ public class PostResponseDto {
         this.originalName=post.getUploadedImage().getOriginalName();
         this.postText=post.getPostText();
         this.modifiedAt=post.getModifiedAt();
-        if(post.getComments()!=null){
-            this.commentList= post.getComments().stream().map(comment -> new CommentResponseDto(comment)).collect(Collectors.toList());
-        }
     }
 }
