@@ -85,7 +85,7 @@ operation::get-token[snippets='http-request,request-body,request-headers,request
 
 토큰을 이용한 로그인
 
-operation::oauth-authorization[snippets='http-request,request-body,curl-request,http-response,response-body']
+operation::oauth-authorization[snippets='http-request,curl-request,http-response']
 
 
 [[resources-account]]
@@ -154,4 +154,39 @@ operation::update-post[snippets='request-headers,request-fields,curl-request,res
 `DELETE` 요청을 사용해서 기존 게시글을 삭제할 수 있다.
 
 operation::delete-post[snippets='request-fields,curl-request,http-response']
+
+
+[[resources-comment]]
+== 댓글
+
+게시글 리소스는 댓글을 만들거나 조회할 때 사용한다.
+
+[[resources-comment-list]]
+=== 댓글 조회
+
+`GET` 요청을 사용하여 게시글의 댓글을 조회할 수 있다.
+
+operation::get-comments[snippets='request-headers, request-parameters, response-fields,curl-request,http-response']
+
+[[resources-comments-post]]
+=== 댓글 생성
+
+`POST` 요청을 사용해서 새 댓글을 만들 수 있다.
+
+operation::create-comment[snippets='request-headers,request-fields,curl-request,response-body,response-fields,http-response']
+
+
+[[resources-comments -update]]
+=== 댓글 수정
+
+`PUT` 요청을 사용해서 기존 댓글을 수정할 수 있다.
+
+operation::update-comment[snippets='request-headers,request-fields,curl-request,response-body,response-fields,http-response']
+
+[[resources-posts-delete]]
+=== 댓글 삭제
+
+`DELETE` 요청을 사용해서 기존 댓글을 삭제할 수 있다.
+
+operation::delete-comment[snippets='request-fields,curl-request,http-response']
 

@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 
 import java.util.UUID;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -63,6 +64,7 @@ public class CommentControllerTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsBytes(dto))
         )
                 .andDo(print())
+                .andDo(document(""))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("commentText").exists())
                 .andExpect(jsonPath("createdBy").exists())
