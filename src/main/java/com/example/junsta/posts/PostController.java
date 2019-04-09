@@ -2,12 +2,9 @@ package com.example.junsta.posts;
 
 import com.example.junsta.accounts.Account;
 import com.example.junsta.accounts.AccountAdapter;
-import com.example.junsta.exceptions.PostNotExistException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;

@@ -1,6 +1,7 @@
 package com.example.junsta.posts;
 
 import com.example.junsta.comments.CommentResponseDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,9 @@ public class PostResponseDto {
     private String imageExtension;
     private String postText;
     private String createdBy;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedAt;
 
     public PostResponseDto(Post post){
