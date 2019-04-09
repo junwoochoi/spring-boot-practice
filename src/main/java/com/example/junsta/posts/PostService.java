@@ -44,7 +44,7 @@ public class PostService {
     public Page<PostResponseDto> findAll(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
 
-        return posts.map((post -> new PostResponseDto(post)));
+        return posts.map((PostResponseDto::new));
     }
 
     public Optional<Post> findById(Long id){

@@ -28,6 +28,8 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -106,6 +108,7 @@ public class CommentControllerTest extends BaseControllerTest {
                                 ),
                                 responseFields(
                                         fieldWithPath("id").description("댓글 ID"),
+                                        fieldWithPath("postId").description("댓글 달린 게시글 ID"),
                                         fieldWithPath("commentText").description("댓글 내용"),
                                         fieldWithPath("createdBy").description("댓글 작성자"),
                                         fieldWithPath("createdAt").description("작성 일시"),
@@ -135,6 +138,7 @@ public class CommentControllerTest extends BaseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(objectMapper.writeValueAsBytes(dto))
         )
+                .andDo(print())
                 .andExpect(status().isBadRequest());
 
     }
@@ -207,17 +211,70 @@ public class CommentControllerTest extends BaseControllerTest {
 
     @Test
     public void 댓글_조회_성공() throws Exception {
+        Post post = createPost(11);
+
+        IntStream.range(1,10).forEach(value -> createComment(value, post));
+
         mockMvc.perform(
-                get("/api/posts")
+                get("/api/comments")
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
-                        .param("page", "1")
+                        .param("page", "0")
                         .param("size", "10")
                         .param("sort", "createdAt,desc")
-                        .param("postId", "1")
+                        .param("postId", String.valueOf(post.getId()))
         )
                 .andDo(print())
+                .andDo(document(
+                        "get-comments",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("인증 정보 헤더")
+                        ),
+                        requestParameters(
+                                parameterWithName("postId").description("댓글 조회 요청할 게시글 id"),
+                                parameterWithName("page").description("요청할 페이지 넘버"),
+                                parameterWithName("size").description("한 페이지 당 사이즈"),
+                                parameterWithName("sort").description("정렬할 기준 필드, 오름차순 or 내림차순")
+                        ),
+                        responseFields(
+                                fieldWithPath("content").description("받아온 포스트 데이터 정보"),
+                                fieldWithPath("content[].id").description("댓글 id"),
+                                fieldWithPath("content[].postId").description("댓글이 달린 게시글 id"),
+                                fieldWithPath("content[].commentText").description("댓글 내용"),
+                                fieldWithPath("content[].createdBy").description("댓글 작성자"),
+                                fieldWithPath("content[].createdAt").description("댓글 작성 일시"),
+                                fieldWithPath("content[].modifiedAt").description("댓글 수정 일시"),
+                                fieldWithPath("pageable").description("페이징 관련 정보"),
+                                fieldWithPath("pageable.sort").description("페이징 내 정렬 관련 정보"),
+                                fieldWithPath("pageable.sort.sorted").description("페이지 정렬 여부"),
+                                fieldWithPath("pageable.sort.unsorted").description("페이징 정렬이 되지않았는지 여부"),
+                                fieldWithPath("pageable.sort.empty").description("페이지 정렬 비어있는지 여부"),
+                                fieldWithPath("pageable.offset").description("페이징 Offset 정보"),
+                                fieldWithPath("pageable.pageSize").description("페이지 사이즈 정보"),
+                                fieldWithPath("pageable.pageNumber").description("페이지 넘버( 0부터 시작 ) 정보"),
+                                fieldWithPath("pageable.paged").description("페이징 여부"),
+                                fieldWithPath("pageable.unpaged").description("페이징 여부"),
+                                fieldWithPath("totalPages").description("토탈 페이지 수"),
+                                fieldWithPath("last").description("마지막 페이지인지 확인"),
+                                fieldWithPath("totalElements").description("전체 게시글 수"),
+                                fieldWithPath("number").description("페이지 넘버"),
+                                fieldWithPath("size").description("페이지 나누는 사이즈"),
+                                fieldWithPath("first").description("첫째 페이지인지 여부"),
+                                fieldWithPath("numberOfElements").description("Elements 갯수"),
+                                fieldWithPath("first").description("첫째 페이지인지 여부"),
+                                fieldWithPath("sort").description("정렬 관련 정보"),
+                                fieldWithPath("sort.sorted").description(" 정렬 여부"),
+                                fieldWithPath("sort.unsorted").description(" 정렬이 되지않았는지 여부"),
+                                fieldWithPath("sort.empty").description(" 비어있는지 여부"),
+                                fieldWithPath("empty").description("비어있는지 여부")
+                        )
+                ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("content").exists())
+                .andExpect(jsonPath("content[0].postId").exists())
+                .andExpect(jsonPath("content[0].id").exists())
+                .andExpect(jsonPath("content[0].createdBy").exists())
+                .andExpect(jsonPath("content[0].createdAt").exists())
+                .andExpect(jsonPath("content[0].modifiedAt").exists())
                 .andExpect(jsonPath("pageable").exists());
     }
 
@@ -225,7 +282,7 @@ public class CommentControllerTest extends BaseControllerTest {
     @Test
     public void 댓글_조회_실패_페이지값_유효성검사() throws Exception {
         mockMvc.perform(
-                get("/api/posts")
+                get("/api/comments")
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                         .param("page", "-100")
                         .param("size", "10")
@@ -239,9 +296,9 @@ public class CommentControllerTest extends BaseControllerTest {
     @Test
     public void 댓글_조회_실패_존재하지않는포스트() throws Exception {
         mockMvc.perform(
-                get("/api/posts")
+                get("/api/comments")
                         .header(HttpHeaders.AUTHORIZATION, getAccessToken())
-                        .param("page", "1")
+                        .param("page", "0")
                         .param("size", "10")
                         .param("sort", "createdAt,desc")
                         .param("postId", "123141234123")

@@ -2,6 +2,7 @@ package com.example.junsta.posts;
 
 import com.example.junsta.accounts.Account;
 import com.example.junsta.accounts.AccountAdapter;
+import com.example.junsta.common.PageableValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +20,12 @@ public class PostController {
 
     private final PostService postService;
     private final PostRequestValidator postRequestValidator;
+    private final PageableValidator pageableValidator;
 
     @GetMapping
     public ResponseEntity getPost(Pageable pageable){
+        pageableValidator.validate(pageable);
+
         Page<PostResponseDto> posts = postService.findAll(pageable);
         return ResponseEntity.ok(posts);
     }
