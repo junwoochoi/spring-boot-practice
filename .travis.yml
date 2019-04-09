@@ -8,6 +8,13 @@ before_install:
 
 sudo: required
 
+branches:
+  only:
+    - master
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
 
 script:
   # BUILD
