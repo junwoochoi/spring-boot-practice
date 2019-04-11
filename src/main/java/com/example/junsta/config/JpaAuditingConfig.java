@@ -11,8 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
-@EnableJpaAuditing
 @Configuration
+@EnableJpaAuditing
 public class JpaAuditingConfig {
 
     @Bean
