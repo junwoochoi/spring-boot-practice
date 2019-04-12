@@ -311,6 +311,7 @@ public class CommentControllerTest extends BaseControllerTest {
     public void 댓글수정_성공() throws Exception {
         Post post = createPost(1);
         Comment comment = createComment(1, post);
+        Thread.sleep(1000);
 
         String updatedText = "updatedText";
         CommentPutRequestDto dto = CommentPutRequestDto.builder()

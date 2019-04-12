@@ -10,6 +10,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -63,15 +65,18 @@ public class AccountTest {
 
     @Transactional
     @Test
-    public void 수정시간_확인() {
+    public void 수정시간_확인() throws InterruptedException {
         Account junu = createAccount("junu@email.com", "최주누", "비번");
 
+        Thread.sleep(3000);
         String displayName = "hello@";
         junu.updateAccount(
                 AccountUpdateRequestDto.builder()
                         .displayName(displayName)
                         .build()
         );
+
+        accountRepository.saveAndFlush(junu);
 
 
         assertThat(junu.getDisplayName()).isEqualTo(displayName);

@@ -39,6 +39,7 @@ public class CommentService {
         }
 
         comment.updateText(dto);
+        commentRepository.saveAndFlush(comment);
         return new CommentResponseDto(comment);
     }
 }

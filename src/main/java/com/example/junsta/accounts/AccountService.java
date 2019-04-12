@@ -58,6 +58,7 @@ public class AccountService implements UserDetailsService {
         Account account = optionalAccount.get();
 
         account.updateAccount(dto);
+        accountRepository.saveAndFlush(account);
         return new AccountResponseDto(account);
     }
 
