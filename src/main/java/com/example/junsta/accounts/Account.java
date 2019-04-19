@@ -1,6 +1,7 @@
 package com.example.junsta.accounts;
 
 import com.example.junsta.common.BaseEntity;
+import com.example.junsta.posts.Post;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
@@ -40,6 +41,13 @@ public class Account extends BaseEntity {
 
     @ManyToMany(mappedBy = "followingSet")
     private Set<Account> beFollowedSet = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "like",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    private Set<Post> likePosts = new HashSet<>();
 
     @Builder
     public Account(String email, String displayName, String password){
