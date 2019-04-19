@@ -108,7 +108,8 @@ public class PostControllerTest extends BaseControllerTest {
                                 fieldWithPath("postText").description("포스트 본문"),
                                 fieldWithPath("createdBy").description("포스트 작성자 이메일"),
                                 fieldWithPath("createdAt").description("포스트 작성 일시"),
-                                fieldWithPath("modifiedAt").description("포스트 수정 일시")
+                                fieldWithPath("modifiedAt").description("포스트 수정 일시"),
+                                fieldWithPath("likeCount").description("좋아요 받은 수")
                         )
                 ))
                 .andExpect(status().isOk())
@@ -120,6 +121,7 @@ public class PostControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("createdAt").exists())
                 .andExpect(jsonPath("modifiedAt").exists())
                 .andExpect(jsonPath("createdBy").exists())
+                .andExpect(jsonPath("likeCount").exists())
         ;
     }
 
@@ -211,6 +213,7 @@ public class PostControllerTest extends BaseControllerTest {
                                 fieldWithPath("content[].createdBy").description("포스트 작성자 이메일"),
                                 fieldWithPath("content[].createdAt").description("포스트 작성 일시"),
                                 fieldWithPath("content[].modifiedAt").description("포스트 수정 일시"),
+                                fieldWithPath("content[].likeCount").description("좋아요 받은 수"),
                                 fieldWithPath("pageable").description("페이징 관련 정보"),
                                 fieldWithPath("pageable.sort").description("페이징 내 정렬 관련 정보"),
                                 fieldWithPath("pageable.sort.sorted").description("페이지 정렬 여부"),
@@ -290,7 +293,8 @@ public class PostControllerTest extends BaseControllerTest {
                                 fieldWithPath("postText").description("포스트 본문"),
                                 fieldWithPath("createdBy").description("포스트 작성자 이메일"),
                                 fieldWithPath("createdAt").description("포스트 작성 일시"),
-                                fieldWithPath("modifiedAt").description("포스트 수정 일시")
+                                fieldWithPath("modifiedAt").description("포스트 수정 일시"),
+                                fieldWithPath("likeCount").description("좋아요 받은 수")
                         )
                 ))
                 .andExpect(status().isOk())
