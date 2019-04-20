@@ -27,6 +27,7 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedAt;
+    private Integer likeCount;
 
     public PostResponseDto(Post post){
         this.id = post.getId();
@@ -38,5 +39,6 @@ public class PostResponseDto {
         this.originalName=post.getUploadedImage().getOriginalName();
         this.postText=post.getPostText();
         this.modifiedAt=post.getModifiedAt();
+        this.likeCount=post.getLikeUsers().size();
     }
 }

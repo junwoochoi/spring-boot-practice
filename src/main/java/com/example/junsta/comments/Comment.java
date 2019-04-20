@@ -35,4 +35,8 @@ public class Comment extends BaseEntity {
         this.post = post;
         this.createdBy = account;
     }
+
+    public void updateText(CommentPutRequestDto dto) {
+        this.commentText = dto.getCommentText();
+    }
 }

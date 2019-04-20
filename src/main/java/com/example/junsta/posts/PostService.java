@@ -52,11 +52,7 @@ public class PostService {
     }
 
     public PostResponseDto updatePost(PostUpdateRequestDto dto, Account account) {
-        Post post = postRepository.findById(dto.getId()).orElseThrow(PostNotExistException::new);
-
-        if (!post.getAccount().equals(account)) {
-            throw new UnauthorizedException();
-        }
+        Post post = findPostIfExists(dto.getId(), account);
 
         post.updateText(dto);
 
@@ -65,13 +61,24 @@ public class PostService {
 
 
     public void deletePost(Long id, Account currentUser) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotExistException::new);
-        if (!currentUser.equals(post.getAccount())) {
-            throw new UnauthorizedException();
-        }
+        Post post = findPostIfExists(id, currentUser);
         UploadedImage image = post.getUploadedImage();
         s3ImageRemover.deleteFromS3(image);
         postRepository.delete(post);
         uploadedImageService.delete(image.getId());
+    }
+
+    public void createLike(Long postId, Account currentUser) {
+        Post post = findPostIfExists(postId, currentUser);
+
+        post.createLike(currentUser);
+    }
+
+    private Post findPostIfExists(Long postId, Account currentUser) {
+        Post post = postRepository.findById(postId).orElseThrow(PostNotExistException::new);
+        if (!currentUser.equals(post.getAccount())) {
+            throw new UnauthorizedException();
+        }
+        return post;
     }
 }

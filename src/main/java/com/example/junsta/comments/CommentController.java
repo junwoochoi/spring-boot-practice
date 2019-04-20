@@ -21,7 +21,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity createComment(@RequestBody @Valid CommentRequestDto dto, Errors errors,
+    public ResponseEntity createComment(@RequestBody @Valid CommentPostRequestDto dto, Errors errors,
                                         @AuthenticationPrincipal AccountAdapter accountAdapter) {
         if(errors.hasErrors()){
             return ResponseEntity.badRequest().body(errors);
@@ -36,6 +36,17 @@ public class CommentController {
     public ResponseEntity getComments(Long postId, Pageable pageable){
         pageableValidator.validate(pageable);
         return ResponseEntity.ok(commentService.findByPostId(postId, pageable));
+    }
+
+    @PutMapping
+    public ResponseEntity updateComment(@RequestBody @Valid CommentPutRequestDto dto, Errors errors,
+                                        @AuthenticationPrincipal AccountAdapter accountAdapter){
+        if(errors.hasErrors()){
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        Account currentUser = accountAdapter.getAccount();
+        return ResponseEntity.ok(commentService.updateComment(dto, currentUser));
     }
 
 }

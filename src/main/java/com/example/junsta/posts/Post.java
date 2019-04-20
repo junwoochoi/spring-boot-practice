@@ -10,7 +10,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedBy;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -30,13 +33,16 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @OrderBy("createdAt ASC")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @CreatedBy
-    @JoinColumn(name = "created_by", referencedColumnName= "id")
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(targetEntity = Account.class, fetch = FetchType.LAZY, optional = false)
     private Account account;
+
+    @ManyToMany(mappedBy = "likePosts")
+    private Set<Account> likeUsers = new HashSet<>();
 
     @Builder
     public Post(UploadedImage uploadedImage, String postText, List<Comment> comments, Account account) {
@@ -51,5 +57,10 @@ public class Post extends BaseEntity {
         if (dto.getId() == this.getId()) {
             this.postText = dto.getPostText();
         }
+    }
+
+    public void createLike(Account currentUser) {
+        likeUsers.add(currentUser);
+        currentUser.getLikePosts().add(this);
     }
 }

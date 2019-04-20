@@ -1,16 +1,16 @@
 package com.example.junsta.accounts;
 
 
-import lombok.Data;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,12 +23,13 @@ public class AccountTest {
     AccountRepository accountRepository;
 
     @Before
-    public void cleanup(){
+    public void cleanup() {
         accountRepository.deleteAll();
     }
 
+
     @Test
-    public void 어카운트_생성_테스트(){
+    public void 어카운트_생성_테스트() {
 
         //Given
         String email = "junwoo4690@naver.com";
@@ -50,9 +51,9 @@ public class AccountTest {
     }
 
     @Test
-    public void 팔로우_테스트(){
-        Account junu = createAccount("junu@email.com","최주누", "비번");
-        Account stalker = createAccount("stalker@email.com","스토커", "비번");
+    public void 팔로우_테스트() {
+        Account junu = createAccount("junu@email.com", "최주누", "비번");
+        Account stalker = createAccount("stalker@email.com", "스토커", "비번");
 
         junu.startFollow(stalker);
 
@@ -62,12 +63,32 @@ public class AccountTest {
 
     }
 
+    @Transactional
+    @Test
+    public void 수정시간_확인() throws InterruptedException {
+        Account junu = createAccount("junu@email.com", "최주누", "비번");
+
+        Thread.sleep(3000);
+        String displayName = "hello@";
+        junu.updateAccount(
+                AccountUpdateRequestDto.builder()
+                        .displayName(displayName)
+                        .build()
+        );
+
+        accountRepository.saveAndFlush(junu);
+
+
+        assertThat(junu.getDisplayName()).isEqualTo(displayName);
+        assertThat(junu.getCreatedAt()).isBefore(junu.getModifiedAt());
+    }
+
 
     private Account createAccount(String email, String displayName, String password) {
-        return Account.builder()
-                    .email(email)
-                    .displayName(displayName)
-                    .password(password)
-                    .build();
+        return accountRepository.save(Account.builder()
+                .email(email)
+                .displayName(displayName)
+                .password(password)
+                .build());
     }
 }

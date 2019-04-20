@@ -1,6 +1,7 @@
 package com.example.junsta.comments;
 
 import com.example.junsta.accounts.Account;
+import com.example.junsta.accounts.AccountRequestDto;
 import com.example.junsta.common.BaseControllerTest;
 import com.example.junsta.common.S3ImageUploader;
 import com.example.junsta.common.S3MockConfig;
@@ -10,7 +11,6 @@ import com.example.junsta.uploadImages.UploadedImage;
 import com.example.junsta.uploadImages.UploadedImageDto;
 import com.example.junsta.uploadImages.UploadedImageRepository;
 import io.findify.s3mock.S3Mock;
-import lombok.RequiredArgsConstructor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,16 +22,15 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.UUID;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
+import static org.hamcrest.Matchers.not;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -85,7 +84,7 @@ public class CommentControllerTest extends BaseControllerTest {
                 .build();
         postRepository.save(post);
 
-        CommentRequestDto dto = CommentRequestDto.builder()
+        CommentPostRequestDto dto = CommentPostRequestDto.builder()
                 .postId(post.getId())
                 .commentText("this is comment contents")
                 .build();
@@ -127,7 +126,7 @@ public class CommentControllerTest extends BaseControllerTest {
 
     @Test
     public void 댓글달기_게시글존재안함() throws Exception {
-        CommentRequestDto dto = CommentRequestDto.builder()
+        CommentPostRequestDto dto = CommentPostRequestDto.builder()
                 .postId(Long.valueOf(114634623))
                 .commentText("this is comment contents")
                 .build();
@@ -161,7 +160,7 @@ public class CommentControllerTest extends BaseControllerTest {
                 .build();
         postRepository.save(post);
 
-        CommentRequestDto dto = CommentRequestDto.builder()
+        CommentPostRequestDto dto = CommentPostRequestDto.builder()
                 .postId(post.getId())
                 .commentText("")
                 .build();
@@ -194,7 +193,7 @@ public class CommentControllerTest extends BaseControllerTest {
                 .build();
         postRepository.save(post);
 
-        CommentRequestDto dto = CommentRequestDto.builder()
+        CommentPostRequestDto dto = CommentPostRequestDto.builder()
                 .commentText("sadfasdf")
                 .build();
 
@@ -213,7 +212,7 @@ public class CommentControllerTest extends BaseControllerTest {
     public void 댓글_조회_성공() throws Exception {
         Post post = createPost(11);
 
-        IntStream.range(1,10).forEach(value -> createComment(value, post));
+        IntStream.range(1, 10).forEach(value -> createComment(value, post));
 
         mockMvc.perform(
                 get("/api/comments")
@@ -305,6 +304,83 @@ public class CommentControllerTest extends BaseControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    public void 댓글수정_성공() throws Exception {
+        Post post = createPost(1);
+        Comment comment = createComment(1, post);
+        Thread.sleep(1000);
+
+        String updatedText = "updatedText";
+        CommentPutRequestDto dto = CommentPutRequestDto.builder()
+                .commentId(comment.getId())
+                .commentText(updatedText)
+                .build();
+        mockMvc.perform(
+                put("/api/comments")
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("commentText").exists())
+                .andExpect(jsonPath("createdBy").exists())
+                .andExpect(jsonPath("modifiedAt").exists())
+                .andExpect(jsonPath("createdAt").exists())
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("commentText").value(updatedText));
+    }
+
+    @Test
+    public void 댓글수정_실패_댓글존재안함() throws Exception {
+
+        String updatedText = "updatedText";
+        CommentPutRequestDto dto = CommentPutRequestDto.builder()
+                .commentId(Long.valueOf(1132411))
+                .commentText(updatedText)
+                .build();
+        mockMvc.perform(
+                put("/api/comments")
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void 댓글수정_실패_작성자가아님() throws Exception {
+        Post post = createPost(1);
+        Account anotherAccount = accountService.save(AccountRequestDto.builder()
+                .displayName("anotherOne")
+                .email("helloWorld@test.com")
+                .password("password")
+                .build());
+        Comment comment = commentRepository.save(
+                Comment.builder()
+                        .account(anotherAccount)
+                        .post(post)
+                        .commentText("im commentText")
+                        .build()
+        );
+
+        String updatedText = "updatedText";
+        CommentPutRequestDto dto = CommentPutRequestDto.builder()
+                .commentId(comment.getId())
+                .commentText(updatedText)
+                .build();
+        mockMvc.perform(
+                put("/api/comments")
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaders.AUTHORIZATION, getAccessToken())
+                        .content(objectMapper.writeValueAsBytes(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 
 
