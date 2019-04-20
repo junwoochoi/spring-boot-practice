@@ -190,3 +190,23 @@ operation::update-comment[snippets='request-headers,request-fields,curl-request,
 
 operation::delete-comment[snippets='request-fields,curl-request,http-response']
 
+
+[[resources-like]]
+== 좋아요
+
+[[resources-like-post]]
+=== 좋아요 생성
+
+'POST' 요청을 통해서 기존 포스트에 좋아요를 생성할 수 있다.
+
+operation::create-like[snippets='request-headers, request-fields, http-response']
+
+[[resources-like-delete]]
+=== 좋아요 생성
+
+'DELETE' 요청을 통해서 기존 포스트에 좋아요를 취소할 수 있다.
+
+operation::cancel-like[snippets='request-headers, request-fields, http-response']
+
+
+

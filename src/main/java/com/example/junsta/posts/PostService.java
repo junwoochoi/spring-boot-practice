@@ -74,7 +74,7 @@ public class PostService {
         post.createLike(currentUser);
     }
 
-    private Post findPostIfExists(Long postId, Account currentUser) {
+    public Post findPostIfExists(Long postId, Account currentUser) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotExistException::new);
         if (!currentUser.equals(post.getAccount())) {
             throw new UnauthorizedException();

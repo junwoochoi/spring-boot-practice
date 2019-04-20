@@ -60,7 +60,22 @@ public class Post extends BaseEntity {
     }
 
     public void createLike(Account currentUser) {
-        likeUsers.add(currentUser);
-        currentUser.getLikePosts().add(this);
+        if (!likeUsers.contains(currentUser)) {
+            likeUsers.add(currentUser);
+        }
+        Set<Post> likePosts = currentUser.getLikePosts();
+        if(!likePosts.contains(this)){
+            likePosts.add(this);
+        }
+    }
+
+    public void cancelLike(Account currentUser) {
+        if(likeUsers.contains(currentUser)){
+            likeUsers.remove(currentUser);
+        }
+        Set<Post> likePosts = currentUser.getLikePosts();
+        if(likePosts.contains(this)){
+            likePosts.remove(this);
+        }
     }
 }
