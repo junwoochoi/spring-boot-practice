@@ -58,4 +58,9 @@ public class Post extends BaseEntity {
             this.postText = dto.getPostText();
         }
     }
+
+    public void createLike(Account currentUser) {
+        likeUsers.add(currentUser);
+        currentUser.getLikePosts().add(this);
+    }
 }
