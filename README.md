@@ -74,5 +74,5 @@ $ mvn spring-boot:run
 
 - 해당 API는 RestDocs로 작성된 가이드를 보고 테스트 할 수 있습니다.
 
-![image-20190420154341873](/Users/junu/IdeaProjects/spring-boot-practice/docs.image.png)
+![image-20190420154341873](./docs.image.png)
 
