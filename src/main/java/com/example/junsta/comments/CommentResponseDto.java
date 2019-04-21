@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -21,6 +24,7 @@ public class CommentResponseDto {
     private LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedAt;
+    private List<CommentResponseDto> childComments = new ArrayList<>();
 
     public CommentResponseDto(Comment comment){
         this.id = comment.getId();
@@ -29,5 +33,6 @@ public class CommentResponseDto {
         this.createdBy = comment.getCreatedBy().getEmail();
         this.commentText = comment.getCommentText();
         this.postId = comment.getPost().getId();
+        this.childComments = comment.getChildComments().stream().map(CommentResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
     }
 }

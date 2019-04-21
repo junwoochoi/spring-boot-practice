@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,15 +24,20 @@ public class Comment extends BaseEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", referencedColumnName= "id")
+    @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
     @CreatedBy
     private Account createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(updatable = false, nullable = true)
     private Comment parentComment;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentComment")
+    private List<Comment> childComments = new ArrayList<>();
 
     @Builder
     public Comment(String commentText, Post post, Account account, Comment parentComment) {

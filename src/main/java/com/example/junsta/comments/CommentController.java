@@ -32,7 +32,7 @@ public class CommentController {
     @GetMapping
     public ResponseEntity getComments(Long postId, Pageable pageable) {
         pageableValidator.validate(pageable);
-        return ResponseEntity.ok(commentService.findByPostId(postId, pageable));
+        return ResponseEntity.ok(commentService.findAllByPostAndParentCommentIsNull(postId, pageable));
     }
 
     @PutMapping
