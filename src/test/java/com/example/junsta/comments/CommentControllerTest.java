@@ -23,7 +23,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.not;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;

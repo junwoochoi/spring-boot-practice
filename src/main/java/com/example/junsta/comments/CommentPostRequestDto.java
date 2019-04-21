@@ -21,10 +21,9 @@ public class CommentPostRequestDto {
     @NotBlank
     private String commentText;
 
-    public Comment toEntity(Account currentUser, PostService postService) {
+    public Comment toEntity(PostService postService) {
         return Comment.builder()
                 .post(postService.findById(this.postId).orElseThrow(PostNotExistException::new))
-                .account(currentUser)
                 .commentText(this.commentText)
                 .build();
     }

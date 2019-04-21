@@ -29,10 +29,14 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Comment parentComment;
+
     @Builder
-    public Comment(String commentText, Post post, Account account) {
+    public Comment(String commentText, Post post, Account account, Comment parentComment) {
         this.commentText = commentText;
         this.post = post;
+        this.parentComment = parentComment;
         this.createdBy = account;
     }
 

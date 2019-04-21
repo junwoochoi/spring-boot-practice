@@ -21,27 +21,24 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity createComment(@RequestBody @Valid CommentPostRequestDto dto, Errors errors,
-                                        @AuthenticationPrincipal AccountAdapter accountAdapter) {
-        if(errors.hasErrors()){
+    public ResponseEntity createComment(@RequestBody @Valid CommentPostRequestDto dto, Errors errors) {
+        if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        Account currentUser = accountAdapter.getAccount();
-
-        return ResponseEntity.ok(commentService.saveComment(dto, currentUser));
+        return ResponseEntity.ok(commentService.saveComment(dto));
     }
 
     @GetMapping
-    public ResponseEntity getComments(Long postId, Pageable pageable){
+    public ResponseEntity getComments(Long postId, Pageable pageable) {
         pageableValidator.validate(pageable);
         return ResponseEntity.ok(commentService.findByPostId(postId, pageable));
     }
 
     @PutMapping
     public ResponseEntity updateComment(@RequestBody @Valid CommentPutRequestDto dto, Errors errors,
-                                        @AuthenticationPrincipal AccountAdapter accountAdapter){
-        if(errors.hasErrors()){
+                                        @AuthenticationPrincipal AccountAdapter accountAdapter) {
+        if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors);
         }
 

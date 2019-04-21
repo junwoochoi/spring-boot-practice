@@ -20,8 +20,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostService postService;
 
-    public CommentResponseDto saveComment(CommentPostRequestDto dto, Account currentUser) {
-        Comment savedComment = commentRepository.save(dto.toEntity(currentUser, postService));
+    public CommentResponseDto saveComment(CommentPostRequestDto dto) {
+        Comment savedComment = commentRepository.save(dto.toEntity(postService));
 
         return new CommentResponseDto(savedComment);
     }
