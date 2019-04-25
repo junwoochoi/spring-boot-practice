@@ -110,7 +110,8 @@ public class CommentControllerTest extends BaseControllerTest {
                                         fieldWithPath("commentText").description("댓글 내용"),
                                         fieldWithPath("createdBy").description("댓글 작성자"),
                                         fieldWithPath("createdAt").description("작성 일시"),
-                                        fieldWithPath("modifiedAt").description("최근 수정 일시")
+                                        fieldWithPath("modifiedAt").description("최근 수정 일시"),
+                                        fieldWithPath("childCommentsCount").description("댓글에 달린 대댓글 갯수")
                                 )
                         )
 
@@ -241,6 +242,7 @@ public class CommentControllerTest extends BaseControllerTest {
                                 fieldWithPath("content[].createdBy").description("댓글 작성자"),
                                 fieldWithPath("content[].createdAt").description("댓글 작성 일시"),
                                 fieldWithPath("content[].modifiedAt").description("댓글 수정 일시"),
+                                fieldWithPath("content[].childCommentsCount").description("댓글에 달린 대댓글 갯수"),
                                 fieldWithPath("pageable").description("페이징 관련 정보"),
                                 fieldWithPath("pageable.sort").description("페이징 내 정렬 관련 정보"),
                                 fieldWithPath("pageable.sort.sorted").description("페이지 정렬 여부"),

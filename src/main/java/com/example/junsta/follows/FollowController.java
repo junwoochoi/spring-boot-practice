@@ -6,10 +6,7 @@ import com.example.junsta.accounts.AccountAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,10 +16,18 @@ public class FollowController{
     private final FollowService followService;
 
     @PostMapping
-    public ResponseEntity startFollow(@RequestBody FollowDto dto
-            , @AuthenticationPrincipal AccountAdapter accountAdapter){
+    public ResponseEntity startFollow(@RequestBody FollowDto dto,
+                                      @AuthenticationPrincipal AccountAdapter accountAdapter){
         Account currentUser = accountAdapter.getAccount();
         followService.startFollow(dto, currentUser);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity cancelFollow(@RequestBody FollowDto dto,
+                                       @AuthenticationPrincipal AccountAdapter accountAdapter){
+        Account currentUser = accountAdapter.getAccount();
+        followService.cancelFollow(dto, currentUser);
         return ResponseEntity.noContent().build();
     }
 

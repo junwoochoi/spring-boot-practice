@@ -209,4 +209,17 @@ operation::create-like[snippets='request-headers, request-fields, http-response'
 operation::cancel-like[snippets='request-headers, request-fields, http-response']
 
 
+=== 계정 팔로우 시작
+
+'POST' 요청을 통해서 기존 계정에 팔로우를 생성할 수 있다.
+
+operation::start-follow[snippets='request-headers, request-fields, http-response']
+
+[[resources-like-delete]]
+=== 계정 팔로우 취소
+
+'DELETE' 요청을 통해서 기존 팔로우를 취소할 수 있다.
+
+operation::cancel-follow[snippets='request-headers, request-fields, http-response']
+
 

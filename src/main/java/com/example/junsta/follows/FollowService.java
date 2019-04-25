@@ -19,4 +19,10 @@ public class FollowService {
 
         currentUser.startFollow(followedUser);
     }
+
+    public void cancelFollow(FollowDto dto, Account currentUser) {
+        Account followedUser = accountRepository.findByEmail(dto.getEmail()).orElseThrow(MemberNotExistException::new);
+
+        currentUser.cancelFollow(followedUser);
+    }
 }

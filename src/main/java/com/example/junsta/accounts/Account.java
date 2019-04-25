@@ -64,4 +64,9 @@ public class Account extends BaseEntity {
         this.followingSet.add(followedUser);
         followedUser.getBeFollowedSet().add(this);
     }
+
+    public void cancelFollow(Account followedUser) {
+        this.followingSet.remove(followedUser);
+        followedUser.getBeFollowedSet().remove(this);
+    }
 }
