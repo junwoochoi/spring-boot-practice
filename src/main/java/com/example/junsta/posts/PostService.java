@@ -31,7 +31,6 @@ public class PostService {
     public PostResponseDto uploadPost(PostRequestDto dto) {
 
         Post post = Post.builder()
-                .account(dto.getAccount())
                 .uploadedImage(uploadedImageService.findByImageName(dto.getUploadedImageName()).get())
                 .postText(dto.getPostText())
                 .build();
@@ -68,13 +67,8 @@ public class PostService {
         uploadedImageService.delete(image.getId());
     }
 
-    public void createLike(Long postId, Account currentUser) {
-        Post post = findPostIfExists(postId, currentUser);
 
-        post.createLike(currentUser);
-    }
-
-    private Post findPostIfExists(Long postId, Account currentUser) {
+    public Post findPostIfExists(Long postId, Account currentUser) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotExistException::new);
         if (!currentUser.equals(post.getAccount())) {
             throw new UnauthorizedException();
