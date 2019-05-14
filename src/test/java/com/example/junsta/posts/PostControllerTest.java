@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PostControllerTest extends BaseControllerTest {
 
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
 
     @Autowired
     private PostRepository postRepository;
@@ -51,7 +51,7 @@ public class PostControllerTest extends BaseControllerTest {
     @Autowired
     private S3ImageUploader s3ImageUploader;
     @Autowired
-    S3Mock s3Mock;
+    private S3Mock s3Mock;
 
     @Before
     public void setup() {
@@ -186,7 +186,7 @@ public class PostControllerTest extends BaseControllerTest {
         IntStream.range(0, 30).forEach(this::createPost);
 
 
-        mockMvc.perform(get("/api/posts")
+        mockMvc.perform(get("/api/posts/all")
                 .header(HttpHeaders.AUTHORIZATION, getAccessToken())
                 .param("page", "1")
                 .param("size", "10")

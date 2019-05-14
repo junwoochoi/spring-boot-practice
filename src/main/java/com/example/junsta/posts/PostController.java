@@ -22,7 +22,7 @@ public class PostController {
     private final PostRequestValidator postRequestValidator;
     private final PageableValidator pageableValidator;
 
-    @GetMapping
+    @GetMapping("/api/posts/all")
     public ResponseEntity getPost(Pageable pageable){
         pageableValidator.validate(pageable);
 
