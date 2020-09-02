@@ -3,7 +3,7 @@
 
 사진형 SNS 서비스인 인스타그램을 참고하여 만드는 Spring Boot 서비스 입니다.
 
-[SNS REST API GUIDE 링크](https://sns.junu.dev/docs/index.html)
+~[SNS REST API GUIDE 링크]~
 
 
 
